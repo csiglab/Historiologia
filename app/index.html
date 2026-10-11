@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historiologia</title>
+    <link rel="icon" href="/shared/img/favicon.ico">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('historiologia-theme') === 'light' ? 'light' : 'dark';</script>
+    <meta name="description" content="Historiologia — research hub for Hispanic cultural, historical, and literary heritage.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-void: #0b0e14; --bg-surface: #11151e; --bg-card: #161b26; --bg-elevated: #1d2330;
+            --bg-hover: rgba(255, 255, 255, 0.04);
+            --gilt: #C4B998; --parchment: #D6D1C4; --thread: #4a4a4a;
+            --text-primary: #f4f3f1; --text-secondary: #a8a5b0; --text-muted: #9290aa; --text-ghost: #82809a;
+            --accent-copper: #c9956c; --accent-copper-light: #dbb08a; --accent-sage: #7ba388;
+            --accent-plum: #9b7eb0; --accent-rose: #c47d8a; --accent-amber: #d4a857; --accent-steel: #6b8caa;
+            --accent-gold: #c9956c; --accent-gold-dim: rgba(201, 149, 108, 0.14);
+            --accent-cyan: #4dd4c4; --accent-cyan-dim: rgba(77, 212, 196, 0.1);
+            --border-subtle: rgba(255, 255, 255, 0.05); --border-medium: rgba(255, 255, 255, 0.08); --border-strong: rgba(255, 255, 255, 0.12);
+            --radius-sm: 5px; --radius-md: 8px; --radius-lg: 12px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15); --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2); --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
+            --card-bg: rgba(22, 27, 38, 0.72); --nav-bg: rgba(11, 14, 20, 0.85); --footer-bg: rgba(11, 14, 20, 0.7);
+            --font-display: 'Cormorant Garamond', serif; --font-body: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+        }
+        html[data-theme="light"] {
+            --bg-void: #f5f2ea; --bg-surface: #efe9dc; --bg-card: #fffdf8; --bg-elevated: #ffffff;
+            --bg-hover: rgba(20, 22, 30, 0.04);
+            --gilt: #9a7b3f; --parchment: #2b2620; --thread: rgba(43, 38, 32, 0.25);
+            --text-primary: #1a1d24; --text-secondary: #4a4f5e; --text-muted: #7a7f8e; --text-ghost: #9aa0ae;
+            --accent-copper: #9a7b3f; --accent-copper-light: #7a6132; --accent-sage: #4e7a5e; --accent-plum: #7a5f8c;
+            --accent-rose: #a55a68; --accent-amber: #9a742f; --accent-steel: #4e6e8c; --accent-gold: #9a7b3f;
+            --accent-gold-dim: rgba(154, 123, 63, 0.12); --accent-cyan: #0e7c72; --accent-cyan-dim: rgba(14, 124, 114, 0.08);
+            --border-subtle: rgba(20, 22, 30, 0.10); --border-medium: rgba(20, 22, 30, 0.14); --border-strong: rgba(20, 22, 30, 0.22);
+            --card-bg: rgba(255, 253, 248, 0.72); --nav-bg: rgba(245, 242, 234, 0.85); --footer-bg: rgba(245, 242, 234, 0.75);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; background: var(--bg-void); }
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: opacity 180ms ease; }
+        html.theme-fading body { opacity: 0; }
+        #ambientCanvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+        nav.nav { position: sticky; top: 0; z-index: 20; background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); }
+        .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+        a.brand { font-family: var(--font-display); font-style: italic; font-size: 1.35rem; color: var(--text-primary); text-decoration: none; }
+        a.brand span { color: var(--accent-copper); }
+        .nav-right { display: flex; align-items: center; gap: 0.4rem; }
+        .nav-right a { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); text-decoration: none; padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); }
+        .nav-right a:hover { color: var(--text-primary); background: var(--bg-hover); }
+        #themeToggle { background: transparent; border: 1px solid var(--border-medium); color: var(--text-secondary); border-radius: 999px; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.4rem 0.8rem; cursor: pointer; }
+        #themeToggle:hover { color: var(--text-primary); border-color: var(--border-strong); }
+        main { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 4rem 2rem 4rem; width: 100%; flex: 1; }
+        .eyebrow { font-family: var(--font-display); font-style: italic; font-size: 0.9rem; color: rgba(201, 149, 108, 0.85); letter-spacing: 0.06em; margin-bottom: 1rem; }
+        h1.display { font-family: var(--font-display); font-style: italic; font-weight: 300; font-size: clamp(2.6rem, 6vw, 4.4rem); line-height: 1.05; margin-bottom: 1.4rem; max-width: 20ch; }
+        .lede { color: var(--text-secondary); max-width: 68ch; line-height: 1.75; font-size: 1rem; font-weight: 300; }
+        h2.section { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-copper); margin: 3.2rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border-subtle); }
+        .metrics { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 2rem 0 0.5rem; }
+        .metric { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); border: 1px solid var(--border-medium); border-radius: 999px; padding: 0.45rem 0.9rem; background: var(--card-bg); }
+        .metric b { color: var(--accent-copper); font-weight: 500; }
+        .metric.wip b { color: var(--accent-amber); }
+        .prose { color: var(--text-secondary); max-width: 72ch; line-height: 1.8; font-size: 0.95rem; font-weight: 300; }
+        .prose + .prose { margin-top: 0.8rem; }
+        a.inline { color: var(--accent-cyan); text-decoration: none; } a.inline:hover { text-decoration: underline; }
+        .works { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.7rem; }
+        .works a { display: block; background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.95rem 1.1rem; text-decoration: none; box-shadow: var(--shadow-sm); }
+        .works a:hover { border-color: var(--accent-copper); }
+        .works .wh { font-family: var(--font-display); font-style: italic; font-size: 1.2rem; color: var(--text-primary); line-height: 1.2; }
+        .works .wm { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.45rem; }
+        .entries { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+        .entry { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-medium); color: var(--text-secondary); background: var(--card-bg); }
+        .entry:hover { color: var(--text-primary); border-color: var(--border-strong); }
+        .entry.primary { color: var(--bg-void); background: var(--accent-copper); border-color: var(--accent-copper); }
+        .entry.primary:hover { background: var(--accent-copper-light); border-color: var(--accent-copper-light); color: var(--bg-void); }
+        footer { position: relative; z-index: 1; border-top: 1px solid var(--border-subtle); background: var(--footer-bg); backdrop-filter: blur(12px); }
+        .foot-inner { max-width: 1100px; margin: 0 auto; padding: 1.6rem 2rem 2rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; justify-content: space-between; }
+        .foot-brand { font-family: var(--font-display); font-style: italic; color: var(--text-primary); }
+        .foot-colophon { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.14em; color: var(--text-muted); }
+        .foot-links a { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); text-decoration: none; margin-left: 1.1rem; }
+        .foot-links a:hover { color: var(--accent-cyan); }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } body { transition: none; } }
+    </style>
+</head>
+<body>
+<canvas id="ambientCanvas"></canvas>
+<nav class="nav"><div class="nav-inner">
+    <a class="brand" href="/">Historiologia<span>.</span></a>
+    <div class="nav-right">
+        <a href="/note/web/">Catalog</a>
+        <a href="/note/data/meta/atlas.html">Atlas</a>
+        <a href="/about.html">About</a>
+        <button id="themeToggle" type="button">◐ LIGHT/DARK</button>
+    </div>
+</div></nav>
+<main>
+    <div class="eyebrow">Laboratorium Maius Studiorum Historiologiae</div>
+    <h1 class="display">Hispanic history, culture &amp; letters, in notes.</h1>
+    <p class="lede">Historiologia is a collaborative research hub for the advanced study, preservation and dissemination of Hispanic cultural, historical and literary heritage, with comparative notes on the wider world. It is a working corpus: notes are written, cited and revised in the open.</p>
+
+    <div class="metrics" id="metrics">
+        <span class="metric"><b>—</b> notes</span>
+        <span class="metric"><b>—</b> words</span>
+    </div>
+
+    <h2 class="section">Method</h2>
+    <p class="prose">Each topic is a <strong>note</strong> — a markdown file rendered on the fly, titled by its own first heading, linked to primary sources and other notes. Interactive pages are <strong>live notes</strong> (self-contained HTML) such as the <a class="inline" href="/note/data/meta/atlas.html">atlas</a>, which shows the corpus by volume. Every note shares the same navigation, typography and theme; the <a class="inline" href="/note/web/">catalog</a> is the navigator, with full-text search, section and tag facets, and a filter for notes still in progress. <a class="inline" href="/about.html#method">Read more →</a></p>
+
+    <h2 class="section">Selected works</h2>
+    <div class="works">
+        <a href="/note/web/note.html?n=castilla/monarquia-hispanica.md"><div class="wh">Monarquía Hispánica</div><div class="wm">castilla</div></a>
+        <a href="/note/web/note.html?n=castilla/epistemologia.md"><div class="wh">Epistemología</div><div class="wm">castilla</div></a>
+        <a href="/note/web/note.html?n=castilla/song-china.md"><div class="wh">Song China</div><div class="wm">castilla</div></a>
+        <a href="/note/web/note.html?n=castilla/panorama-de-la-filosofia-hispanica.md"><div class="wh">Panorama de la Filosofía Hispánica</div><div class="wm">castilla</div></a>
+        <a href="/note/web/note.html?n=castilla/politica.md"><div class="wh">Política</div><div class="wm">castilla</div></a>
+        <a href="/note/web/note.html?n=castilla/economica.md"><div class="wh">Economía</div><div class="wm">castilla</div></a>
+        <a href="/note/web/note.html?n=castilla/conocimiento.md"><div class="wh">Conocimiento</div><div class="wm">castilla</div></a>
+        <a href="/note/web/note.html?n=castilla/tauromaquia.md"><div class="wh">Tauromaquia</div><div class="wm">castilla</div></a>
+    </div>
+
+    <h2 class="section">Enter</h2>
+    <div class="entries">
+        <a class="entry primary" href="/note/web/">Search the corpus →</a>
+        <a class="entry" href="/note/data/meta/atlas.html">Atlas</a>
+        <a class="entry" href="/about.html">About</a>
+    </div>
+</main>
+<footer><div class="foot-inner">
+    <div><div class="foot-brand">Historiologia</div><div class="foot-colophon">HISTORIA · MEMORIA · UNUS INDEX</div></div>
+    <div class="foot-links"><a href="/note/web/">Catalog</a><a href="/note/data/meta/atlas.html">Atlas</a><a href="/about.html">About</a><a href="/api/health">API</a></div>
+</div></footer>
+<script>
+(function () {
+    "use strict";
+    var root = document.documentElement;
+    function theme(label) { root.dataset.theme = label; try { localStorage.setItem('historiologia-theme', label); } catch (e) {} }
+    document.getElementById('themeToggle').addEventListener('click', function () {
+        root.classList.add('theme-fading');
+        setTimeout(function () {
+            theme(root.dataset.theme === 'light' ? 'dark' : 'light');
+            setTimeout(function () { root.classList.remove('theme-fading'); }, 60);
+        }, 120);
+    });
+    // ambient constellation (copper/cyan, respects reduced motion)
+    try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var c = document.getElementById('ambientCanvas'), x = c.getContext('2d'), pts = [], N = 70;
+        function size() { c.width = innerWidth; c.height = innerHeight; }
+        size(); addEventListener('resize', size);
+        for (var i = 0; i < N; i++) pts.push({ x: Math.random(), y: Math.random(), vx: (Math.random() - .5) * .0006, vy: (Math.random() - .5) * .0006 });
+        (function tick() {
+            x.clearRect(0, 0, c.width, c.height);
+            for (var i = 0; i < pts.length; i++) {
+                var p = pts[i]; p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > 1) p.vx *= -1; if (p.y < 0 || p.y > 1) p.vy *= -1;
+                x.fillStyle = i % 5 ? 'rgba(201,149,108,.5)' : 'rgba(77,212,196,.5)';
+                x.beginPath(); x.arc(p.x * c.width, p.y * c.height, 1.1, 0, 7); x.fill();
+            }
+            requestAnimationFrame(tick);
+        })();
+    } catch (e) {}
+    // statistics
+    fetch('data/landing-metrics.json').then(function (r) { return r.json(); }).then(function (m) {
+        var fmt = function (v) { return v == null ? '—' : Number(v).toLocaleString(); };
+        var chips = [
+            ['<b>' + fmt(m.notes) + '</b> notes'],
+            ['<b>' + fmt(m.words) + '</b> words'],
+            ['<b>' + fmt(m.tags) + '</b> tags']
+        ];
+        if (m.sections) chips.push(['<b>' + Object.keys(m.sections).length + '</b> sections']);
+        if (m.unfinished != null && m.notes != null) chips.push(['<b>' + fmt(m.unfinished) + '</b> in progress']);
+        document.getElementById('metrics').innerHTML = chips.map(function (h) {
+            var wip = h[0].indexOf('in progress') >= 0 ? ' wip' : '';
+            return '<span class="metric' + wip + '">' + h[0] + '</span>';
+        }).join('');
+    }).catch(function () {});
+})();
+</script>
+</body>
+</html>

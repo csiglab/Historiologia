@@ -1,3 +1,0 @@
-# Central Asia
-
-: 12

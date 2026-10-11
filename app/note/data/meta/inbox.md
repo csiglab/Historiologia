@@ -1,0 +1,4 @@
+- https://babel.banrepcultural.org/digital/collection/p17054coll10/id/4082/
+- https://editorial.eafit.edu.co/index.php/editorial/catalog/view/54/73/206
+- https://es.wikipedia.org/wiki/José_Manuel_Restrepo_Vélez
+- Las que producen las minas no deslumbran al ciudadano juicioso. Ningún pueblo ha con-seguido con la explotación de los metales si no es una efímera prosperidad. Las ricas venas de plata de Méjico y del Perú, el oro y la platina del Nuevo Reino de Granada, de ningún modo han hecho más opulenta a la España, cuando  antes de que las poseyese estaba al frente de las  potencias  europeas.  Por  el  contrario,  la  Inglaterra y la Holanda han sido las naciones más ricas de la Europa, sostenidas únicamente por  su  agricultura,  sus  artes  y  su  comercio:  éstos  son  los  verdaderos  manantiales  de  la  prosperidad; y éstos los que deben cultivar las naciones que pretenden figurar en el sistema político del mundo.

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas · Historiologia</title>
+    <link rel="icon" href="/shared/img/favicon.ico">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('historiologia-theme') === 'light' ? 'light' : 'dark';</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-void:#0b0e14; --bg-surface:#11151e; --bg-card:#161b26; --bg-elevated:#1d2330;
+            --text-primary:#f4f3f1; --text-secondary:#a8a5b0; --text-muted:#9290aa; --text-ghost:#82809a;
+            --accent-gold:#c9956c; --accent-cyan:#4dd4c4; --border-subtle:rgba(255,255,255,0.05); --border-medium:rgba(255,255,255,0.08); --border-strong:rgba(255,255,255,0.12);
+            --card-bg:rgba(22,27,38,0.72); --nav-bg:rgba(11,14,20,0.85); --font-display:'Cormorant Garamond',serif; --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace; }
+        html[data-theme="light"] { --bg-void:#f5f2ea; --bg-surface:#efe9dc; --bg-card:#fffdf8; --bg-elevated:#ffffff;
+            --text-primary:#1a1d24; --text-secondary:#4a4f5e; --text-muted:#7a7f8e; --text-ghost:#9aa0ae;
+            --accent-gold:#9a7b3f; --accent-cyan:#0e7c72; --border-subtle:rgba(20,22,30,0.10); --border-medium:rgba(20,22,30,0.14); --border-strong:rgba(20,22,30,0.22);
+            --card-bg:rgba(255,253,248,0.72); --nav-bg:rgba(245,242,234,0.85); }
+        * { margin:0; padding:0; box-sizing:border-box; } html { scroll-behavior:smooth; background:var(--bg-void); }
+        body { background:var(--bg-void); color:var(--text-primary); font-family:var(--font-body); min-height:100vh; transition:opacity 180ms ease; }
+        html.theme-fading body { opacity:0; }
+        .layout { max-width:1400px; margin:0 auto; padding:2.2rem 2rem 4rem; }
+        .crumbs { font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-muted); margin-bottom:1.1rem; }
+        .crumbs a { color:var(--text-muted); text-decoration:none; } .crumbs a:hover { color:var(--accent-cyan); }
+        .crumbs .sep { margin:0 0.5em; opacity:0.5; } .crumbs .here { color:var(--accent-gold); }
+        h1.note-title { font-family:var(--font-display); font-weight:300; font-size:clamp(1.9rem,4vw,2.8rem); line-height:1.1; padding-bottom:0.9rem; border-bottom:1px solid var(--border-subtle); }
+        .subtitle { color:var(--text-secondary); margin:0.9rem 0 1.3rem; max-width:80ch; line-height:1.6; font-size:0.9rem; }
+        .toolbar { display:flex; flex-wrap:wrap; gap:0.6rem; align-items:center; margin-bottom:1rem; }
+        .metric-btn { font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase;
+            background:var(--bg-elevated); border:1px solid var(--border-medium); color:var(--text-secondary);
+            border-radius:5px; padding:0.4rem 0.8rem; cursor:pointer; min-width:110px; }
+        .metric-btn:hover { color:var(--text-primary); border-color:var(--border-strong); }
+        .tm-count { font-family:var(--font-mono); font-size:0.62rem; color:var(--text-muted); }
+        .tm-crumb { display:inline-flex; align-items:center; gap:0.35rem; font-family:var(--font-mono); font-size:0.62rem; color:var(--text-secondary); }
+        .tm-crumb button { font-family:var(--font-mono); font-size:0.62rem; color:var(--accent-cyan); background:transparent;
+            border:1px solid var(--border-subtle); border-radius:4px; padding:0.2rem 0.5rem; cursor:pointer; }
+        .tm-crumb button:hover { border-color:var(--accent-cyan); }
+        .tm-crumb .here { color:var(--accent-gold); }
+        #tm-wrap { position:relative; border:1px solid var(--border-subtle); border-radius:8px; background:var(--card-bg); }
+        #tm-canvas { display:block; width:100%; height:70vh; min-height:420px; cursor:pointer; }
+        #tm-tip { position:absolute; pointer-events:none; display:none; z-index:5; max-width:340px;
+            background:var(--bg-elevated); border:1px solid var(--border-strong); border-radius:5px;
+            padding:0.45rem 0.65rem; font-size:0.74rem; }
+        #tm-tip .t-src { font-family:var(--font-mono); font-size:0.58rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); }
+        #tm-tip .t-title { font-family:var(--font-display); font-size:1.15rem; margin:0.15rem 0; }
+        #tm-tip .t-desc { color:var(--text-secondary); font-size:0.76rem; }
+        footer { border-top:1px solid var(--border-subtle); margin-top:2.4rem; padding-top:1rem; color:var(--text-muted); font-size:0.72rem; line-height:1.6; }
+        footer a { color:var(--text-secondary); }
+        #themeToggle { position:fixed; top:1rem; right:1rem; z-index:50; background:var(--nav-bg); border:1px solid var(--border-medium); color:var(--text-secondary); border-radius:999px; font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; cursor:pointer; }
+    </style>
+</head>
+<body>
+<button id="themeToggle" type="button"><span id="themeLabel">LIGHT</span></button>
+<div class="layout">
+    <nav class="crumbs">
+        <a href="../../web/index.html">Historiologia</a><span class="sep">/</span>
+        <a href="../../web/index.html?view=browse&dir=castilla">Castilla</a><span class="sep">/</span>
+        <span class="here">Note Atlas</span>
+    </nav>
+    <h1 class="note-title">Note Atlas</h1>
+    <p class="subtitle">The notes corpus by volume: sections first — click once to drill into a section's tags, <em>Esc</em> to come back. Tag blocks open the catalog pre-filtered. Weight by note <em>count</em> or <em>words</em>.</p>
+    <div class="toolbar">
+        <button class="metric-btn" id="tm-metric">weight: count</button>
+        <span class="tm-crumb" id="tm-crumb"></span>
+        <span class="tm-count" id="tm-count"></span>
+    </div>
+    <div id="tm-wrap">
+        <canvas id="tm-canvas"></canvas>
+        <div id="tm-tip"><div class="t-src" id="tm-tip-src"></div><div class="t-title" id="tm-tip-title"></div><div class="t-desc" id="tm-tip-desc"></div></div>
+    </div>
+    <footer><p>Data: <code>index.json</code> — the notes corpus index. Click-through lands in the <a href="../../web/index.html">notes catalog</a>, scoped to the section directory with the tag as search text.</p></footer>
+</div>
+<script>
+(function () {
+    "use strict";
+    function el(id){return document.getElementById(id);}
+    function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+    var btn=el("themeToggle"),label=el("themeLabel");
+    label.textContent=document.documentElement.dataset.theme==="light"?"DARK":"LIGHT";
+    btn.addEventListener("click",function(){var r=document.documentElement;r.classList.add("theme-fading");setTimeout(function(){r.dataset.theme=r.dataset.theme==="light"?"dark":"light";try{localStorage.setItem("historiologia-theme",r.dataset.theme);}catch(e){}label.textContent=r.dataset.theme==="light"?"DARK":"LIGHT";r.classList.remove("theme-fading");},120);});
+
+    var COLORS = { social:'#c9956c', technique:'#6b8caa', nature:'#8fc16a', epistemica:'#9b7eb0', meta:'#c47d8a', live:'#4dd4c4', general:'#d4a857' };
+    var state = { notes:[], metric:'count', rects:[], hover:null, path:'' };
+    function color(s){return COLORS[s]||'#888888';}
+    function weight(n){return state.metric==='words'?(n.words||0):1;}
+    function hexA(hex,a){var h=(hex||'#888888').replace('#','');var r=parseInt(h.slice(0,2),16)||0,g=parseInt(h.slice(2,4),16)||0,b=parseInt(h.slice(4,6),16)||0;return 'rgba('+r+','+g+','+b+','+a+')';}
+
+    function build(){
+        var bySection={};
+        state.notes.forEach(function(n){
+            var s=n.section||'root';
+            if(!bySection[s])bySection[s]={notes:[],tags:{}};
+            bySection[s].notes.push(n);
+            (n.tags||[]).forEach(function(t){bySection[s].tags[t]=(bySection[s].tags[t]||0)+1;});
+        });
+        return Object.keys(bySection).map(function(s){
+            var g=bySection[s];
+            var w=g.notes.reduce(function(a,n){return a+weight(n);},0);
+            var tags=Object.keys(g.tags).map(function(t){
+                var ns=g.notes.filter(function(n){return (n.tags||[]).indexOf(t)>=0;});
+                return {tag:t,count:g.tags[t],weight:ns.reduce(function(a,n){return a+weight(n);},0)};
+            }).sort(function(a,b){return b.weight-a.weight;});
+            var kids=tags.slice(0,7).map(function(t){return {label:'#'+t.tag,section:s,tag:t.tag,count:t.count,weight:t.weight};});
+            var rest=tags.slice(7);
+            if(rest.length)kids.push({label:'other',section:s,tag:'',count:rest.reduce(function(a,t){return a+t.count;},0),weight:rest.reduce(function(a,t){return a+t.weight;},0)});
+            return {label:s,section:s,tag:'',weight:w,count:g.notes.length,kids:kids};
+        }).sort(function(a,b){return b.weight-a.weight;});
+    }
+    function layout(kids,x,y,w,h){
+        var total=kids.reduce(function(a,k){return a+k.weight;},0)||1;
+        var out=[],cx=x,cy=y,cw=w,ch=h;
+        kids.forEach(function(k){
+            var f=total?k.weight/total:0;
+            if(cw>=ch){out.push({n:k,x:cx,y:cy,w:Math.max(0,cw*f-1.5),h:ch});cx+=cw*f;cw-=cw*f;}
+            else{out.push({n:k,x:cx,y:cy,w:cw,h:Math.max(0,ch*f-1.5)});cy+=ch*f;ch-=ch*f;}
+        });
+        return out;
+    }
+    function draw(){
+        if(!state.notes.length)return;
+        var cv=el('tm-canvas'),r=cv.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+        cv.width=Math.max(1,r.width*dpr);cv.height=Math.max(1,r.height*dpr);
+        var ctx=cv.getContext('2d');
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        ctx.clearRect(0,0,r.width,r.height);
+        var tree=build(),pad=8;
+        state.rects=[];
+        var ink=getComputedStyle(document.documentElement).getPropertyValue('--text-primary')||'#f4f3f1';
+        function paint(t,depth){
+            state.rects.push(t);
+            var hov=state.hover===t.n.section+'|'+t.n.label;
+            ctx.fillStyle=hexA(color(t.n.section),depth?(hov?0.95:0.7):(hov?0.45:0.28));
+            ctx.fillRect(t.x,t.y,t.w,t.h);
+            var titleSize=depth?10:12,minW=depth?46:70,minH=depth?16:22;
+            if(t.w>minW&&t.h>minH){
+                ctx.fillStyle=depth?'rgba(0,0,0,0.78)':ink;
+                ctx.font="600 "+titleSize+"px 'JetBrains Mono',monospace";
+                var label=String(t.n.label),max=Math.max(1,Math.floor(t.w/(titleSize*0.62)));
+                if(label.length>max)label=label.slice(0,Math.max(1,max-1))+'…';
+                ctx.fillText(label,t.x+5,t.y+15);
+                if(t.h>48){ctx.font="9px 'JetBrains Mono',monospace";ctx.fillStyle=depth?'rgba(0,0,0,0.6)':ink;ctx.fillText(String(t.n.count),t.x+5,t.y+30);}
+            }
+        }
+        if(!state.path.length){
+            /* Level 1: sections only — one click drills deeper. */
+            layout(tree,pad,pad,r.width-pad*2,r.height-pad*2).forEach(function(s){paint(s,0);});
+            el('tm-count').textContent=state.notes.length+' notes · '+tree.length+' sections · weight: '+state.metric+' · click a section to drill in';
+        }else{
+            /* Level 2: tags of the drilled section, normalized to partition it. */
+            var sec=null;
+            tree.forEach(function(s){if(s.section===state.path)sec=s;});
+            if(!sec){state.path='';draw();return;}
+            var kids;
+            if(!sec.kids.length){
+                /* Tag-less section: one block straight to the catalog. */
+                kids=[{label:sec.count+' notes',section:sec.section,tag:'',count:sec.count,weight:sec.weight}];
+            }else{
+                var kw=sec.kids.reduce(function(a,k){return a+k.weight;},0)||1;
+                var f=sec.weight/kw;
+                kids=sec.kids.map(function(k){return {label:k.label,section:k.section,tag:k.tag,count:k.count,weight:k.weight*f};});
+            }
+            layout(kids,pad,pad,r.width-pad*2,r.height-pad*2).forEach(function(t){paint(t,1);});
+            el('tm-count').textContent=sec.count+' notes in '+sec.section+' · weight: '+state.metric+' · click a tag to open the catalog · Esc goes back';
+        }
+        renderCrumb();
+    }
+    function renderCrumb(){
+        var c=el('tm-crumb');
+        c.innerHTML='';
+        function link(label,fn,here){
+            if(here){var s=document.createElement('span');s.className='here';s.textContent=label;c.appendChild(s);return;}
+            var b=document.createElement('button');b.type='button';b.textContent=label;
+            b.addEventListener('click',fn);c.appendChild(b);
+        }
+        function sep(){var s=document.createElement('span');s.textContent='›';s.style.opacity='0.5';c.appendChild(s);}
+        link('notes',function(){state.path='';draw();},!state.path);
+        if(state.path){sep();link(state.path,function(){},true);}
+    }
+    function hit(mx,my){
+        for(var i=state.rects.length-1;i>=0;i--){var r=state.rects[i];if(mx>=r.x&&mx<=r.x+r.w&&my>=r.y&&my<=r.y+r.h)return state.rects[i];}
+        return null;
+    }
+    function tip(t,mx,my){
+        el('tm-tip-src').textContent='notes · '+t.n.section;
+        el('tm-tip-src').style.color=color(t.n.section);
+        el('tm-tip-title').textContent=t.n.label;
+        el('tm-tip-desc').textContent=t.n.count+' notes — '+(state.path?'click to open in the catalog':'click to drill in');
+        var tip=el('tm-tip'),wrap=el('tm-wrap').getBoundingClientRect();
+        tip.style.display='block';
+        tip.style.left=Math.min(wrap.width-360,mx+16)+'px';
+        tip.style.top=(my+14)+'px';
+    }
+    var cv=el('tm-canvas');
+    cv.addEventListener('mousemove',function(e){
+        var r=cv.getBoundingClientRect();
+        var t=hit(e.clientX-r.left,e.clientY-r.top);
+        state.hover=t?(t.n.section+'|'+t.n.label):null;draw();
+        if(t)tip(t,e.clientX-r.left,e.clientY-r.top);
+        else el('tm-tip').style.display='none';
+    });
+    cv.addEventListener('mouseleave',function(){state.hover=null;el('tm-tip').style.display='none';draw();});
+    cv.addEventListener('click',function(e){
+        var r=cv.getBoundingClientRect();
+        var t=hit(e.clientX-r.left,e.clientY-r.top);
+        if(!t)return;
+        if(!state.path){
+            /* First level: one click drills into the section. */
+            state.path=t.n.section;state.hover=null;draw();return;
+        }
+        var url='../../../web/index.html?view=browse&dir='+encodeURIComponent(t.n.section);
+        if(t.n.tag)url+='&q='+encodeURIComponent(t.n.tag);
+        window.open(url,'_blank');
+    });
+    document.addEventListener('keydown',function(e){
+        if(e.key==='Escape'&&state.path){state.path='';draw();}
+    });
+    window.addEventListener('resize',function(){draw();});
+    el('tm-metric').addEventListener('click',function(){
+        state.metric=state.metric==='count'?'words':'count';
+        el('tm-metric').textContent='weight: '+state.metric;
+        draw();
+    });
+    fetch('/note/data/index.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
+        state.notes=d.notes||[];
+        if(!state.notes.length)throw new Error('empty notes index');
+        draw();
+    }).catch(function(e){el('tm-count').textContent='notes index unavailable ('+e.message+')';});
+})();
+</script>
+</body>
+</html>

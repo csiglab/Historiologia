@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes · Historiologia</title>
+    <link rel="icon" href="/shared/img/favicon.ico">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('historiologia-theme') === 'light' ? 'light' : 'dark';</script>
+    <meta name="description" content="Search and read the Historiologia notes corpus.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Oxford Common Room tokens — keep identical to app/shared/theme.css
+               (plus note-specific extras below). */
+            --bg-void: #0b0e14;
+            --bg-surface: #11151e;
+            --bg-card: #161b26;
+            --bg-elevated: #1d2330;
+            --bg-hover: rgba(255, 255, 255, 0.04);
+            --gilt: #C4B998;
+            --parchment: #D6D1C4;
+            --thread: #4a4a4a;
+            --text-primary: #f4f3f1;
+            --text-secondary: #a8a5b0;
+            --text-muted: #9290aa;
+            --text-ghost: #82809a;
+            --accent-copper: #c9956c;
+            --accent-copper-light: #dbb08a;
+            --accent-sage: #7ba388;
+            --accent-plum: #9b7eb0;
+            --accent-rose: #c47d8a;
+            --accent-amber: #d4a857;
+            --accent-steel: #6b8caa;
+            --accent-gold: #c9956c;
+            --accent-gold-dim: rgba(201, 149, 108, 0.14);
+            --accent-cyan: #4dd4c4;
+            --accent-cyan-dim: rgba(77, 212, 196, 0.1);
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --border-medium: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.12);
+            --radius-sm: 5px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
+            --card-bg: rgba(22, 27, 38, 0.72);
+            --nav-bg: rgba(11, 14, 20, 0.85);
+            --footer-bg: rgba(11, 14, 20, 0.7);
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        html[data-theme="light"] {
+            --bg-void: #f5f2ea;
+            --bg-surface: #efe9dc;
+            --bg-card: #fffdf8;
+            --bg-elevated: #ffffff;
+            --bg-hover: rgba(20, 22, 30, 0.04);
+            --gilt: #9a7b3f;
+            --parchment: #2b2620;
+            --thread: rgba(43, 38, 32, 0.25);
+            --text-primary: #1a1d24;
+            --text-secondary: #4a4f5e;
+            --text-muted: #7a7f8e;
+            --text-ghost: #9aa0ae;
+            --accent-copper: #9a7b3f;
+            --accent-copper-light: #7a6132;
+            --accent-sage: #4e7a5e;
+            --accent-plum: #7a5f8c;
+            --accent-rose: #a55a68;
+            --accent-amber: #9a742f;
+            --accent-steel: #4e6e8c;
+            --accent-gold: #9a7b3f;
+            --accent-gold-dim: rgba(154, 123, 63, 0.12);
+            --accent-cyan: #0e7c72;
+            --accent-cyan-dim: rgba(14, 124, 114, 0.08);
+            --border-subtle: rgba(20, 22, 30, 0.10);
+            --border-medium: rgba(20, 22, 30, 0.14);
+            --border-strong: rgba(20, 22, 30, 0.22);
+            --radius-sm: 5px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
+            --card-bg: rgba(255, 253, 248, 0.72);
+            --nav-bg: rgba(245, 242, 234, 0.85);
+            --footer-bg: rgba(245, 242, 234, 0.75);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; background: var(--bg-void); }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            transition: opacity 180ms ease;
+        }
+
+        html.theme-fading body { opacity: 0; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            body { transition: none; }
+        }
+
+        #ambientCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 0;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem 3.5rem;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0.95rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-mark {
+            height: 26px;
+            width: auto;
+        }
+
+        .nav-brand em { font-style: italic; color: var(--accent-gold); }
+
+        .nav-links {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        .theme-toggle {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.45rem 0.75rem;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-toggle:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        header {
+            padding: 2rem 0 3rem;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-weight: 300;
+            font-size: clamp(2.6rem, 5vw, 4.2rem);
+            line-height: 1.05;
+        }
+
+        h1 em { font-style: italic; color: var(--accent-gold); }
+
+        .lede {
+            margin-top: 1.6rem;
+            max-width: 44rem;
+            font-size: 1rem;
+            font-weight: 300;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            border-left: 1px solid var(--accent-gold);
+            padding-left: 1.25rem;
+        }
+
+        .lede strong { font-weight: 500; color: var(--text-primary); }
+
+        .toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .search-wrap {
+            position: relative;
+        }
+
+        #search {
+            width: 100%;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            padding: 0.9rem 1rem 0.9rem 2.6rem;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #search::placeholder { color: var(--text-muted); }
+
+        #search:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(77, 212, 196, 0.05);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.95rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* ---------- catalog view modes ---------- */
+
+        .titlebar {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .stats-btn {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.55rem 0.9rem;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .stats-btn:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        .viewbar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+
+        .viewbtn {
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.55rem 0.9rem;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .viewbtn:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        .viewbtn.active { color: var(--text-primary); border-color: var(--accent-gold); }
+
+        .viewbtn.small { padding: 0.4rem 0.7rem; font-size: 0.55rem; }
+
+        /* Breadcrumb: which directory the catalog is showing. */
+        .crumbbar {
+            margin-bottom: 1.2rem;
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .crumbbar a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+        .crumbbar a:hover { color: var(--accent-cyan); }
+        .crumbbar .sep { margin: 0 0.5em; opacity: 0.5; }
+        .crumbbar .here { color: var(--accent-gold); }
+        .crumbbar .count { margin-left: 0.8rem; opacity: 0.75; }
+
+        .crumbbar-clear {
+            float: right;
+            color: var(--text-secondary);
+            text-decoration: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.35rem 0.6rem;
+            letter-spacing: 0.14em;
+        }
+
+        .crumbbar-clear:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        /* Stats modal (explorer stats-modal pattern). */
+        .stats-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 6, 10, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .stats-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .stats-modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -48%) scale(0.96);
+            width: min(560px, 92vw);
+            max-height: 82vh;
+            background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-void) 100%);
+            border: 1px solid var(--border-medium);
+            border-left: 2px solid var(--accent-gold);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            z-index: 610;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .stats-modal.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .stats-header {
+            padding: 1.2rem 1.4rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .stats-eyebrow {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-style: italic;
+            color: var(--accent-gold);
+            letter-spacing: 0.06em;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .stats-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-style: italic;
+            font-weight: 300;
+            color: var(--text-primary);
+        }
+
+        .stats-close {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            width: 1.8rem; height: 1.8rem;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            line-height: 1;
+        }
+
+        .stats-close:hover { color: var(--accent-rose); }
+
+        .stats-body { flex: 1; overflow-y: auto; padding: 1.1rem 1.4rem 1.6rem; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border-subtle); border: 1px solid var(--border-subtle); }
+
+        .stats-cell { background: var(--bg-void); padding: 0.8rem; }
+
+        .stats-cell .v { font-family: var(--font-mono); font-size: 1.3rem; color: var(--accent-cyan); }
+
+        .stats-cell .l {
+            margin-top: 0.25rem;
+            font-family: var(--font-mono);
+            font-size: 0.56rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .stats-sec-title {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--text-primary);
+            margin: 1.1rem 0 0.5rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .stats-row {
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            padding: 0.35rem 0;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .stats-row .n { margin-left: auto; font-family: var(--font-mono); color: var(--text-primary); }
+
+        .stats-foot { margin-top: 0.9rem; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
+
+        /* Explorer card grid: folders and files as visual cards. */
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.9rem;
+        }
+
+        .card {
+            position: relative;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 140ms ease, transform 140ms ease;
+        }
+
+        .card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+
+        .card:hover .card-name { color: var(--accent-cyan); }
+
+        .card-link {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .card-thumb {
+            height: 104px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-thumb svg { width: 44px; height: 44px; }
+
+        .card-dir .card-thumb svg { color: var(--accent-gold); }
+
+        .card-file .card-thumb svg { color: var(--accent-steel); }
+
+        .card-live .card-thumb svg { color: var(--accent-amber); }
+
+        .card-body {
+            padding: 0.7rem 0.8rem 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            flex: 1;
+        }
+
+        .card-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1.35;
+            color: var(--text-primary);
+            overflow-wrap: anywhere;
+        }
+
+        .card-name mark {
+            background: var(--accent-cyan-dim);
+            color: var(--accent-cyan);
+            padding: 0 0.1em;
+        }
+
+        .card-sub {
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            overflow-wrap: anywhere;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: auto;
+            padding-top: 0.25rem;
+        }
+
+        .card-kind {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.5rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 2px;
+            padding: 0.1rem 0.4rem;
+        }
+
+        .card-dir .card-kind { color: var(--accent-gold); border-color: var(--accent-gold); }
+
+        .card-pin {
+            position: absolute;
+            top: 0.4rem;
+            right: 0.4rem;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .card-pin:hover { color: var(--accent-cyan); }
+
+        .card-pin.pinned { color: var(--accent-gold); }
+
+        .empty {
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-void);
+            padding: 3rem 2rem;
+            text-align: center;
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+        }
+
+        .pager {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.1rem;
+            margin-top: 1.2rem;
+        }
+
+        .page-btn {
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.55rem 0.9rem;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .page-btn:hover:not([disabled]) { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        .page-btn[disabled] { opacity: 0.35; cursor: default; }
+
+        .page-ind {
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border-subtle);
+            background: var(--footer-bg);
+        }
+
+        .foot-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .foot-brand {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            letter-spacing: 0.03em;
+            text-transform: none;
+            color: var(--text-secondary);
+        }
+
+        .foot-brand em { font-style: italic; color: var(--accent-gold); }
+
+        .foot-links { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+
+        footer a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+        footer a:hover { color: var(--accent-cyan); }
+
+        @media (max-width: 860px) {
+            .row-path { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="ambientCanvas" aria-hidden="true"></canvas>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a class="nav-brand" href="/">Historiologia</a>
+            <div class="nav-links"><a href="../data/meta/atlas.html">Atlas</a></div>
+            <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch color theme">◐ <span id="themeLabel">LIGHT</span></button>
+        </div>
+    </nav>
+
+    <div class="page">
+        <header>
+            <div class="titlebar">
+                <h1>Notes<em>.</em></h1>
+                <button type="button" class="stats-btn" id="stats-btn" aria-haspopup="dialog">stats</button>
+            </div>
+            <p class="lede">
+                The written corpus behind <strong>Historiologia</strong> &mdash;
+                long-form notes on the spaces it maps. Plain markdown,
+                indexed and searchable.
+            </p>
+        </header>
+
+        <div class="toolbar">
+            <div class="viewbar" id="viewbar" role="group" aria-label="Catalog view">
+                <button type="button" class="viewbtn" data-view="browse">browse</button>
+                <button type="button" class="viewbtn" data-view="files">files</button>
+                <button type="button" class="viewbtn" id="pins-toggle" aria-pressed="false" title="Show pinned notes only">&#9733; pinned</button>
+                <button type="button" class="viewbtn" id="live-toggle" aria-pressed="false" title="Show live notes only">&#9673; Live</button>
+                <button type="button" class="viewbtn" id="unfinished-toggle" aria-pressed="false" title="Show unfinished notes only">&#9681; unfinished</button>
+            </div>
+            <div class="search-wrap">
+                <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="search" id="search" placeholder="search the corpus&hellip;  ( / )" aria-label="Search notes" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="crumbbar" id="crumbbar" hidden></div>
+
+        <div class="results" id="results"></div>
+        <div class="empty" id="empty" hidden>no notes match.</div>
+        <div class="pager" id="pager" hidden>
+            <button type="button" class="page-btn" id="page-prev">&larr; prev</button>
+            <span class="page-ind" id="page-ind">page 1 / 1</span>
+            <button type="button" class="page-btn" id="page-next">next &rarr;</button>
+        </div>
+    </div>
+
+    <div class="stats-overlay" id="stats-overlay"></div>
+    <div class="stats-modal" id="stats-modal" role="dialog" aria-modal="true" aria-label="Catalog statistics">
+        <div class="stats-header">
+            <span class="stats-eyebrow">Corpus</span>
+            <h3 class="stats-title">Catalog Statistics</h3>
+            <button class="stats-close" id="stats-close" aria-label="Close statistics">&times;</button>
+        </div>
+        <div class="stats-body" id="stats-body"></div>
+    </div>
+
+    <footer>
+        <div class="foot-inner">
+            <div class="foot-brand">Historiologia</div>
+            <div>NOTES &middot; INDEXED &middot; <span id="foot-date">&mdash;</span></div>
+            <div class="foot-links">
+                <a href="/">REGISTRY</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var NOTES = [];
+        var IDX = null;
+        var SEG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+        var VIEWS = ['browse', 'files'];
+        var GRID_PAGE = 48;
+        var state = { q: '', section: 'all', dir: '', view: 'browse', page: 1, pageSize: GRID_PAGE, liveOnly: false, unfinishedOnly: false };
+        var PINS = [];          /* pinned note paths, server order */
+        var pinsAvailable = false;
+        var lastTotalPages = 1;
+        var resultsEl = document.getElementById('results');
+        var emptyEl = document.getElementById('empty');
+        var pagerEl = document.getElementById('pager');
+        var prevBtn = document.getElementById('page-prev');
+        var nextBtn = document.getElementById('page-next');
+        var indEl = document.getElementById('page-ind');
+
+        /* ---------- ambient constellation ---------- */
+
+        var canvas = document.getElementById('ambientCanvas');
+        var ctx = canvas.getContext('2d');
+        var pts = [];
+        var LINK_DIST = 130;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var count = Math.max(24, Math.floor((canvas.width * canvas.height) / 34000));
+            pts = [];
+            for (var i = 0; i < count; i++) {
+                pts.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.22,
+                    vy: (Math.random() - 0.5) * 0.22,
+                    r: Math.random() * 1.4 + 0.4
+                });
+            }
+        }
+
+        function tick() {
+            var light = document.documentElement.dataset.theme === 'light';
+            var dotRGB = light ? '26, 29, 36' : '226, 228, 235';
+            var linkRGB = light ? '154, 123, 63' : '201, 149, 108';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (var i = 0; i < pts.length; i++) {
+                var p = pts[i];
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(' + dotRGB + ', 0.5)';
+                ctx.fill();
+                for (var j = i + 1; j < pts.length; j++) {
+                    var m = pts[j];
+                    var dx = p.x - m.x, dy = p.y - m.y;
+                    var dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < LINK_DIST) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(m.x, m.y);
+                        ctx.strokeStyle = 'rgba(' + linkRGB + ', ' + (0.10 * (1 - dist / LINK_DIST)) + ')';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(tick);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        requestAnimationFrame(tick);
+
+        /* ---------- theme toggle (shared with the hub) ---------- */
+
+        var themeToggle = document.getElementById('themeToggle');
+        var themeLabel = document.getElementById('themeLabel');
+        var themeFading = false;
+
+        function applyThemeLabel() {
+            themeLabel.textContent = document.documentElement.dataset.theme === 'light' ? 'DARK' : 'LIGHT';
+        }
+
+        themeToggle.addEventListener('click', function () {
+            if (themeFading) return;
+            themeFading = true;
+            var root = document.documentElement;
+            var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var swap = function () {
+                root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+                try { localStorage.setItem('historiologia-theme', root.dataset.theme); } catch (e) { /* private mode */ }
+                applyThemeLabel();
+                root.classList.remove('theme-fading');
+                themeFading = false;
+            };
+            if (reduced) {
+                swap();
+                return;
+            }
+            root.classList.add('theme-fading');
+            setTimeout(swap, 190);
+        });
+
+        applyThemeLabel();
+
+        /* ---------- helpers ---------- */
+
+        function esc(s) {
+            var d = document.createElement('div');
+            d.textContent = s == null ? '' : String(s);
+            return d.innerHTML;
+        }
+
+        function encPath(p) {
+            return p.split('/').map(encodeURIComponent).join('/');
+        }
+
+        function cleanQuery(sp) {
+            // Keep directory separators readable: URLSearchParams encodes '/'
+            // as '%2F', but both forms decode to the same value.
+            return sp.toString().replace(/%2F/gi, '/');
+        }
+
+        function hl(text, q) {
+            var e = esc(text);
+            if (!q) return e;
+            var i = text.toLowerCase().indexOf(q.toLowerCase());
+            if (i < 0) return e;
+            return esc(text.slice(0, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>' + esc(text.slice(i + q.length));
+        }
+
+        function liveSub(n) {
+            if (n.kind !== 'live') return '';
+            var parts = String(n.path || '').split('/');
+            return parts.length > 2 ? parts[1] : '';
+        }
+
+        function score(n, q) {
+            var t = n.title.toLowerCase().indexOf(q);
+            if (t === 0) return 0;
+            if (t > 0) return 1;
+            for (var i = 0; i < n.headings.length; i++) {
+                if (n.headings[i].text.toLowerCase().indexOf(q) >= 0) return 2;
+            }
+            if (n.tags && n.tags.join(' ').indexOf(q) >= 0) return 2;
+            if (liveSub(n).toLowerCase().indexOf(q) >= 0) return 2;
+            if (n.text.indexOf(q) >= 0) return 3;
+            return -1;
+        }
+
+        function isPinned(p) { return PINS.indexOf(p) >= 0; }
+
+        function isUnfinished(n) { return !!n.tags && n.tags.indexOf('unfinished') >= 0; }
+
+        function parentDir(p) {
+            var i = p.lastIndexOf('/');
+            return i < 0 ? '' : p.slice(0, i);
+        }
+
+        /* Directory deep link (?dir=a/b): kebab segments only, never a file. */
+        function validDir(d) {
+            if (!d || d.length > 200) return '';
+            var parts = d.split('/');
+            for (var i = 0; i < parts.length; i++) {
+                if (!SEG_RE.test(parts[i])) return '';
+            }
+            return parts.join('/');
+        }
+
+        function inDir(n) { return !state.dir || parentDir(n.path) === state.dir; }
+
+        /* Browse file list: strict level scoping — only the files living
+           directly in state.dir (at root: only truly root-level notes,
+           normally none). The files view keeps the looser inDir filter so
+           ?dir= deep links still flatten a subtree. */
+        function browseFiles() {
+            var q = state.q.trim().toLowerCase();
+            var list = NOTES.filter(function (n) {
+                if (state.section === 'pinned' && !isPinned(n.path)) return false;
+                if (state.liveOnly && n.kind !== 'live') return false;
+                if (state.unfinishedOnly && !isUnfinished(n)) return false;
+                if (parentDir(n.path) !== state.dir) return false;
+                if (!q) return true;
+                return score(n, q) >= 0;
+            });
+            if (q) list = sortScored(list, q);
+            return list;
+        }
+
+        function sortScored(list, q) {
+            return list.map(function (n) { return { n: n, s: score(n, q) }; })
+                .sort(function (a, b) { return a.s - b.s || a.n.title.localeCompare(b.n.title); })
+                .map(function (x) { return x.n; });
+        }
+
+        /* ---------- render ---------- */
+
+        function filteredList() {
+            var q = state.q.trim().toLowerCase();
+            var list = NOTES.filter(function (n) {
+                if (state.section === 'pinned' && !isPinned(n.path)) return false;
+                if (state.liveOnly && n.kind !== 'live') return false;
+                if (state.unfinishedOnly && !isUnfinished(n)) return false;
+                if (!inDir(n)) return false;
+                if (!q) return true;
+                return score(n, q) >= 0;
+            });
+            if (q) {
+                list = sortScored(list, q);
+            }
+            return list;
+        }
+
+        function pinButtonHtml(path) {
+            if (!pinsAvailable) return '';
+            var on = isPinned(path);
+            return '<button type="button" class="card-pin' + (on ? ' pinned' : '') + '"' +
+                ' data-path="' + esc(path) + '"' +
+                ' aria-pressed="' + (on ? 'true' : 'false') + '"' +
+                ' aria-label="' + (on ? 'Unpin note' : 'Pin note') + '"' +
+                ' title="' + (on ? 'unpin' : 'pin') + '">' +
+                '<svg width="13" height="13" viewBox="0 0 24 24" fill="' + (on ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' +
+                '</button>';
+        }
+
+        function fileHref(n) {
+            return n.kind === 'live' ? '../data/' + encPath(n.path) : 'note.html?n=' + encPath(n.path);
+        }
+
+        var ICON_DIR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+
+        var ICON_FILE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+
+        /* File card: file glyph, title + path. */
+        function fileCard(n, q) {
+            var live = n.kind === 'live';
+            var sub = live ? liveSub(n) : '';
+            return '<div class="card ' + (live ? 'card-live' : 'card-file') + '">' +
+                '<a class="card-link" href="' + fileHref(n) + '">' +
+                '<div class="card-thumb">' + ICON_FILE + '</div>' +
+                '<div class="card-body">' +
+                '<div class="card-name">' + hl(n.title, q) + '</div>' +
+                (live ? '' : '<div class="card-sub">' + esc(n.path) + '</div>') +
+                (live ? '<div class="card-meta"><span class="card-kind">live</span>' +
+                    (sub ? '<span class="card-kind">#' + esc(sub) + '</span>' : '') + '</div>' : '') +
+                '</div></a>' +
+                pinButtonHtml(n.path) +
+                '</div>';
+        }
+
+        /* Folder card: folder glyph, name + note count. Enters the
+           directory in place (pushState), no page reload. */
+        function dirCard(s, q) {
+            return '<div class="card card-dir">' +
+                '<a class="card-link" href="' + navHref(s.path) + '" data-navdir="' + esc(s.path) + '">' +
+                '<div class="card-thumb">' + ICON_DIR + '</div>' +
+                '<div class="card-body">' +
+                '<div class="card-name">' + hl(s.name, q) + '</div>' +
+                '<div class="card-meta"><span class="card-kind">dir</span>' +
+                '<span class="card-sub">' + s.count + (s.count === 1 ? ' note' : ' notes') + '</span></div>' +
+                '</div></a></div>';
+        }
+
+        function dirCards(subs) {
+            var q = state.q.trim().toLowerCase();
+            return subs.map(function (s) { return dirCard(s, q); }).join('');
+        }
+
+        function fileCards(list) {
+            var q = state.q.trim().toLowerCase();
+            var start = (state.page - 1) * state.pageSize;
+            return list.slice(start, start + state.pageSize).map(function (n) { return fileCard(n, q); }).join('');
+        }
+
+        /* Immediate subfolders of state.dir, with note counts. A folder
+           shows when it holds a note matching the query (if any); the
+           pinned filter scopes both files and folders to pinned notes. */
+        function dirSubdirs() {
+            if (!state.dir) return [];
+            var q = state.q.trim().toLowerCase();
+            var map = {};
+            NOTES.forEach(function (n) {
+                if (state.section === 'pinned' && !isPinned(n.path)) return;
+                if (state.liveOnly && n.kind !== 'live') return;
+                if (state.unfinishedOnly && !isUnfinished(n)) return;
+                var pre = state.dir + '/';
+                if (n.path.indexOf(pre) !== 0) return;
+                var rest = n.path.slice(pre.length);
+                var slash = rest.indexOf('/');
+                if (slash < 0) return;
+                var seg = rest.slice(0, slash);
+                var e = map[seg] || (map[seg] = { name: seg, path: state.dir + '/' + seg, count: 0, hit: false });
+                e.count++;
+                if (!q || score(n, q) >= 0) e.hit = true;
+            });
+            return Object.keys(map).sort().filter(function (k) { return map[k].hit; }).map(function (k) { return map[k]; });
+        }
+
+        /* Top-level folders for the root browse view (sections as dirs). */
+        function rootSections() {
+            var q = state.q.trim().toLowerCase();
+            var map = {};
+            NOTES.forEach(function (n) {
+                if (state.section === 'pinned' && !isPinned(n.path)) return;
+                if (state.liveOnly && n.kind !== 'live') return;
+                if (state.unfinishedOnly && !isUnfinished(n)) return;
+                var seg = n.path.split('/')[0] || n.path;
+                var e = map[seg] || (map[seg] = { name: seg, path: seg, count: 0, hit: false });
+                e.count++;
+                if (!q || score(n, q) >= 0) e.hit = true;
+            });
+            return Object.keys(map).sort().filter(function (k) { return map[k].hit; }).map(function (k) { return map[k]; });
+        }
+
+        /* Shareable browse URL for a directory (browse view, current filters). */
+        function navHref(dir) {
+            var sp = new URLSearchParams();
+            sp.set('view', 'browse');
+            if (dir) sp.set('dir', dir);
+            if (state.section === 'pinned') sp.set('section', 'pinned');
+            return 'index.html?' + cleanQuery(sp);
+        }
+
+        function crumbsHtml() {
+            var parts = state.dir.split('/');
+            var html = '<a href="index.html" data-navhome>notes</a>';
+            var prefix = [];
+            for (var i = 0; i < parts.length; i++) {
+                prefix.push(parts[i]);
+                html += '<span class="sep">/</span>';
+                if (i === parts.length - 1) {
+                    html += '<span class="here">' + esc(parts[i]) + '</span>';
+                } else {
+                    html += '<a href="' + navHref(prefix.join('/')) + '" data-navdir="' + esc(prefix.join('/')) + '">' + esc(parts[i]) + '</a>';
+                }
+            }
+            return html;
+        }
+
+        /* Breadcrumb: which directory the catalog is showing. Ancestors
+           jump back without a reload; the files view shows the count line. */
+        function renderCrumbbar(subs, fileCount) {
+            var bar = document.getElementById('crumbbar');
+            var filtered = state.dir || state.section !== 'all' || state.liveOnly || state.unfinishedOnly;
+            if (!state.dir && state.view !== 'files' && !filtered) {
+                bar.hidden = true;
+                bar.innerHTML = '';
+                return;
+            }
+            bar.hidden = false;
+            var html = state.dir ? crumbsHtml() : '<a href="index.html" data-navhome>notes</a>';
+            html += '<span class="count">' + fileCount + (fileCount === 1 ? ' note' : ' notes');
+            if (state.view === 'browse') {
+                html += ' &middot; ' + subs.length + (subs.length === 1 ? ' folder' : ' folders');
+            }
+            html += '</span>';
+            if (filtered) {
+                html += '<a class="crumbbar-clear" href="index.html" data-navclear>&times; all notes</a>';
+            }
+            bar.innerHTML = html;
+        }
+
+        function updatePager(count, totalPages) {
+            emptyEl.hidden = count > 0;
+            emptyEl.textContent = state.section === 'pinned'
+                ? 'no pins yet \u2014 star a note.'
+                : (state.liveOnly ? 'no live notes match.' : (state.unfinishedOnly ? 'no unfinished notes match.' : 'no notes match.'));
+            pagerEl.hidden = totalPages <= 1;
+            if (totalPages <= 1) return;
+            indEl.textContent = 'page ' + state.page + ' / ' + totalPages;
+            indEl.title = count + ' notes \u00b7 ' + state.pageSize + ' per page';
+            prevBtn.disabled = state.page <= 1;
+            nextBtn.disabled = state.page >= totalPages;
+        }
+
+        /* ---------- navigation (pushState file browsing) ---------- */
+
+        function snapshot() {
+            return { view: state.view, dir: state.dir, section: state.section, q: state.q, live: state.liveOnly, unfinished: state.unfinishedOnly };
+        }
+
+        function syncUrl(push) {
+            try {
+                var sp = new URLSearchParams();
+                sp.set('view', state.view);
+                if (state.dir) sp.set('dir', state.dir);
+                if (state.section === 'pinned') sp.set('section', 'pinned');
+                if (state.liveOnly) sp.set('live', '1');
+                if (state.unfinishedOnly) sp.set('unfinished', '1');
+                if (state.q.trim()) sp.set('q', state.q.trim());
+                var url = 'index.html?' + cleanQuery(sp);
+                if (push) history.pushState(snapshot(), '', url);
+                else history.replaceState(null, '', url);
+            } catch (e) { /* file:// or old browser: URL stays as-is */ }
+        }
+
+        function readUrl() {
+            var qs;
+            try { qs = new URLSearchParams(window.location.search); }
+            catch (e) { return; }
+            /* Legacy ?view=dirs|tree falls through to browse; legacy
+               ?tag= and non-pinned ?section= are retired (ignored). */
+            var v = (qs.get('view') || 'browse').toLowerCase();
+            state.view = v === 'files' ? 'files' : 'browse';
+            var d = qs.get('dir');
+            state.dir = d ? validDir(d) : '';
+            var s = qs.get('section');
+            state.section = (s && s.toLowerCase() === 'pinned') ? 'pinned' : 'all';
+            state.liveOnly = qs.get('live') === '1';
+            state.unfinishedOnly = qs.get('unfinished') === '1';
+            var q = qs.get('q');
+            state.q = q ? q.slice(0, 200) : '';
+            state.page = 1;
+        }
+
+        /* In-place navigation: folder cards, breadcrumb, view switch. */
+        function navigate(patch, push) {
+            if (patch.view !== undefined) state.view = patch.view;
+            if (patch.dir !== undefined) state.dir = patch.dir;
+            if (patch.section !== undefined) state.section = patch.section;
+            state.page = 1;
+            syncUrl(push !== false);
+            render();
+            resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        /* Pinned filter: kept while section/tag facets are gone. */
+        function togglePinned() {
+            state.section = state.section === 'pinned' ? 'all' : 'pinned';
+            state.page = 1;
+            syncUrl(false);
+            render();
+        }
+
+        function toggleLive() {
+            state.liveOnly = !state.liveOnly;
+            state.page = 1;
+            syncUrl(false);
+            render();
+        }
+
+        function toggleUnfinished() {
+            state.unfinishedOnly = !state.unfinishedOnly;
+            state.page = 1;
+            syncUrl(false);
+            render();
+        }
+
+        function setView(v) {
+            if (VIEWS.indexOf(v) < 0 || v === state.view) return;
+            navigate({ view: v });
+        }
+
+        function renderViewbar() {
+            var btns = document.querySelectorAll('#viewbar .viewbtn[data-view]');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', btns[i].getAttribute('data-view') === state.view);
+            }
+            var pin = document.getElementById('pins-toggle');
+            var on = state.section === 'pinned';
+            pin.classList.toggle('active', on);
+            pin.setAttribute('aria-pressed', on ? 'true' : 'false');
+            var lv = document.getElementById('live-toggle');
+            var lon = !!state.liveOnly;
+            lv.classList.toggle('active', lon);
+            lv.setAttribute('aria-pressed', lon ? 'true' : 'false');
+            var uf = document.getElementById('unfinished-toggle');
+            var uon = !!state.unfinishedOnly;
+            uf.classList.toggle('active', uon);
+            uf.setAttribute('aria-pressed', uon ? 'true' : 'false');
+        }
+
+        /* ---------- stats modal (explorer stats-modal pattern) ---------- */
+
+        function fillStats() {
+            var words = 0;
+            NOTES.forEach(function (n) { words += n.words; });
+            var secs = (IDX && IDX.sections) || {};
+            var names = Object.keys(secs).sort();
+            var html = '<div class="stats-grid">' +
+                '<div class="stats-cell"><div class="v">' + NOTES.length + '</div><div class="l">Notes</div></div>' +
+                '<div class="stats-cell"><div class="v">' + names.length + '</div><div class="l">Sections</div></div>' +
+                '<div class="stats-cell"><div class="v">' + (words > 999 ? (words / 1000).toFixed(1) + 'k' : String(words)) + '</div><div class="l">Words</div></div>' +
+                '</div>' +
+                '<div class="stats-sec-title">Sections</div>' +
+                names.map(function (s) {
+                    return '<div class="stats-row"><span>' + esc(s) + '</span><span class="n">' + secs[s] + '</span></div>';
+                }).join('') +
+                '<div class="stats-foot">index ' + esc(IDX && IDX.generated ? IDX.generated : '\u2014') + '</div>';
+            document.getElementById('stats-body').innerHTML = html;
+        }
+
+        function openStats() {
+            fillStats();
+            document.getElementById('stats-overlay').classList.add('open');
+            document.getElementById('stats-modal').classList.add('open');
+        }
+
+        function closeStats() {
+            document.getElementById('stats-overlay').classList.remove('open');
+            document.getElementById('stats-modal').classList.remove('open');
+        }
+
+        function statsOpen() {
+            return document.getElementById('stats-modal').classList.contains('open');
+        }
+
+        function render() {
+            renderViewbar();
+            var list = state.view === 'browse' ? browseFiles() : filteredList();
+            var subs = state.view === 'browse' ? (state.dir ? dirSubdirs() : rootSections()) : [];
+            renderCrumbbar(subs, list.length);
+            var totalPages = Math.max(1, Math.ceil(list.length / state.pageSize));
+            if (state.page > totalPages) state.page = totalPages;
+            if (state.page < 1) state.page = 1;
+            resultsEl.innerHTML = (state.view === 'browse' ? dirCards(subs) : '') + fileCards(list);
+            lastTotalPages = totalPages;
+            updatePager(list.length, totalPages);
+            /* Folders alone still count as a result: never show the empty
+               state while subfolders are listed. */
+            if (!list.length && subs.length) emptyEl.hidden = true;
+        }
+
+        function goToPage(p) {
+            if (p < 1 || p > lastTotalPages || p === state.page) return;
+            state.page = p;
+            render();
+            resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        prevBtn.addEventListener('click', function () { goToPage(state.page - 1); });
+        nextBtn.addEventListener('click', function () { goToPage(state.page + 1); });
+
+        /* ---------- pins ---------- */
+
+        function togglePin(path) {
+            var on = !isPinned(path);
+            var prev = PINS.slice();
+            if (on) PINS.push(path);
+            else PINS = PINS.filter(function (p) { return p !== path; });
+            render();
+            fetch('/note/api/pins', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: path, pinned: on })
+            }).then(function (r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            }).catch(function (err) {
+                PINS = prev;
+                render();
+                console.warn('pin update failed:', err);
+            });
+        }
+
+        resultsEl.addEventListener('click', function (e) {
+            var btn = e.target.closest('.card-pin');
+            if (btn) {
+                e.preventDefault();
+                togglePin(btn.dataset.path);
+                return;
+            }
+            var nav = e.target.closest('[data-navdir]');
+            if (nav) {
+                e.preventDefault();
+                navigate({ view: 'browse', dir: nav.getAttribute('data-navdir') });
+            }
+        });
+
+        /* ---------- view switcher, breadcrumb, stats modal ---------- */
+
+        document.getElementById('viewbar').addEventListener('click', function (e) {
+            var btn = e.target.closest('.viewbtn[data-view]');
+            if (btn) setView(btn.getAttribute('data-view'));
+        });
+
+        document.getElementById('crumbbar').addEventListener('click', function (e) {
+            var nav = e.target.closest('[data-navdir]');
+            if (nav) {
+                e.preventDefault();
+                navigate({ view: 'browse', dir: nav.getAttribute('data-navdir') });
+                return;
+            }
+            if (e.target.closest('[data-navclear]')) {
+                e.preventDefault();
+                navigate({ dir: '', section: 'all' });
+                return;
+            }
+            if (e.target.closest('[data-navhome]')) {
+                e.preventDefault();
+                navigate({ view: 'browse', dir: '' });
+            }
+        });
+
+        /* Browser Back/Forward restores the pushed filter snapshot. */
+        window.addEventListener('popstate', function (e) {
+            var s = (e.state && e.state.view) ? e.state : null;
+            if (s) {
+                state.view = VIEWS.indexOf(s.view) >= 0 ? s.view : 'browse';
+                state.dir = s.dir || '';
+                state.section = s.section === 'pinned' ? 'pinned' : 'all';
+                state.liveOnly = !!s.live;
+                state.unfinishedOnly = !!s.unfinished;
+                if (typeof s.q === 'string') {
+                    state.q = s.q;
+                    document.getElementById('search').value = s.q;
+                }
+            } else {
+                readUrl();
+                document.getElementById('search').value = state.q;
+            }
+            state.page = 1;
+            render();
+        });
+
+        document.getElementById('stats-btn').addEventListener('click', openStats);
+        document.getElementById('stats-close').addEventListener('click', closeStats);
+        document.getElementById('stats-overlay').addEventListener('click', closeStats);
+
+        /* ---------- boot ---------- */
+
+        fetch('../data/index.json', { headers: { 'Accept': 'application/json' } })
+            .then(function (r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
+            .then(function (idx) {
+                NOTES = idx.notes;
+                IDX = idx;
+                document.getElementById('foot-date').textContent = idx.generated;
+                /* Pins degrade silently: no API -> no pin UI. */
+                return fetch('/note/api/pins', { headers: { 'Accept': 'application/json' } })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(function (d) {
+                        if (d && Array.isArray(d.pins)) {
+                            PINS = d.pins.filter(function (p) { return typeof p === 'string'; });
+                        }
+                        pinsAvailable = true;
+                    })
+                    .catch(function () { pinsAvailable = false; });
+            })
+            .then(function () {
+                readUrl();
+                document.getElementById('search').value = state.q;
+                if (state.dir) document.title = state.dir + ' · Notes';
+                else if (state.view === 'files') document.title = 'All files · Notes';
+                else if (state.section === 'pinned') document.title = 'Pinned · Notes';
+                else if (state.liveOnly) document.title = 'Live · Notes';
+                else if (state.unfinishedOnly) document.title = 'Unfinished · Notes';
+                render();
+                syncUrl(false);
+            })
+            .catch(function () {
+                document.getElementById('empty').hidden = false;
+                document.getElementById('empty').textContent = 'index unavailable \u2014 run: make notes-index';
+            });
+
+        var input = document.getElementById('search');
+        var timer = null;
+        input.addEventListener('input', function () {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                state.q = input.value;
+                state.page = 1;
+                render();
+            }, 120);
+        });
+
+        document.getElementById('pins-toggle').addEventListener('click', togglePinned);
+        document.getElementById('live-toggle').addEventListener('click', toggleLive);
+        document.getElementById('unfinished-toggle').addEventListener('click', toggleUnfinished);
+
+        var resizeTimer = null;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(render, 150);
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && statsOpen()) { closeStats(); return; }
+            var el = document.activeElement;
+            var typing = !!el && (el === input || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA');
+            if (e.key === 'Escape' && document.activeElement === input) { input.blur(); return; }
+            if (e.key === '/' && !typing) { e.preventDefault(); input.focus(); }
+            if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                if (e.key === 'ArrowLeft') { e.preventDefault(); goToPage(state.page - 1); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); goToPage(state.page + 1); }
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

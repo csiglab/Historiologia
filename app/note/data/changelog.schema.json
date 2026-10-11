@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://naturgnosis.org/schemas/changelog.schema.json",
+  "title": "Notes Corpus Changelog",
+  "description": "Per-file edit history for markdown notes in the corpus (app/note/data/**/*.md). Agents append one entry per touched markdown note per change set.",
+  "$comment": "Entry objects in changelog.json must keep their object key order identical to this schema's property order.",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/entry"
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "pattern": "\\.md$",
+          "description": "Corpus-relative path of the changed markdown note."
+        },
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/log"
+          }
+        }
+      },
+      "required": [
+        "file_path",
+        "logs"
+      ],
+      "additionalProperties": false
+    },
+    "log": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "kind": {
+          "type": "string",
+          "description": "Optional change kind; commit-type words (feat, fix, docs, ...) suggested."
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "date",
+        "summary"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

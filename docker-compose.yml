@@ -1,0 +1,9 @@
+services:
+  historiologia:
+    build: .
+    image: historiologia:latest
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-8022}:8022"
+    restart: unless-stopped

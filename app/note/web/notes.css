@@ -1,0 +1,206 @@
+/* Notes — markdown body typography (Oxford Common Room tokens;
+   keep identical to app/shared/theme.css). */
+
+:root {
+    --bg-void: #0b0e14;
+    --bg-surface: #11151e;
+    --bg-card: #161b26;
+    --bg-elevated: #1d2330;
+    --bg-hover: rgba(255, 255, 255, 0.04);
+    --gilt: #C4B998;
+    --parchment: #D6D1C4;
+    --thread: #4a4a4a;
+    --text-primary: #f4f3f1;
+    --text-secondary: #a8a5b0;
+    --text-muted: #9290aa;
+    --text-ghost: #82809a;
+    --accent-copper: #c9956c;
+    --accent-copper-light: #dbb08a;
+    --accent-sage: #7ba388;
+    --accent-plum: #9b7eb0;
+    --accent-rose: #c47d8a;
+    --accent-amber: #d4a857;
+    --accent-steel: #6b8caa;
+    --accent-gold: #c9956c;
+    --accent-gold-dim: rgba(201, 149, 108, 0.14);
+    --accent-cyan: #4dd4c4;
+    --accent-cyan-dim: rgba(77, 212, 196, 0.1);
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    --border-medium: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.12);
+    --radius-sm: 5px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
+    --card-bg: rgba(22, 27, 38, 0.72);
+    --nav-bg: rgba(11, 14, 20, 0.85);
+    --footer-bg: rgba(11, 14, 20, 0.7);
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-theme="light"] {
+    --bg-void: #f5f2ea;
+    --bg-surface: #efe9dc;
+    --bg-card: #fffdf8;
+    --bg-elevated: #ffffff;
+    --bg-hover: rgba(20, 22, 30, 0.04);
+    --gilt: #9a7b3f;
+    --parchment: #2b2620;
+    --thread: rgba(43, 38, 32, 0.25);
+    --text-primary: #1a1d24;
+    --text-secondary: #4a4f5e;
+    --text-muted: #7a7f8e;
+    --text-ghost: #9aa0ae;
+    --accent-copper: #9a7b3f;
+    --accent-copper-light: #7a6132;
+    --accent-sage: #4e7a5e;
+    --accent-plum: #7a5f8c;
+    --accent-rose: #a55a68;
+    --accent-amber: #9a742f;
+    --accent-steel: #4e6e8c;
+    --accent-gold: #9a7b3f;
+    --accent-gold-dim: rgba(154, 123, 63, 0.12);
+    --accent-cyan: #0e7c72;
+    --accent-cyan-dim: rgba(14, 124, 114, 0.08);
+    --border-subtle: rgba(20, 22, 30, 0.10);
+    --border-medium: rgba(20, 22, 30, 0.14);
+    --border-strong: rgba(20, 22, 30, 0.22);
+    --radius-sm: 5px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
+    --card-bg: rgba(255, 253, 248, 0.72);
+    --nav-bg: rgba(245, 242, 234, 0.85);
+    --footer-bg: rgba(245, 242, 234, 0.75);
+}
+
+.markdown-body {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    word-wrap: break-word;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin: 2.2em 0 0.8em;
+    scroll-margin-top: 6rem;
+}
+
+.markdown-body h1 { font-size: 2rem; margin-top: 0; }
+.markdown-body h2 { font-size: 1.55rem; padding-bottom: 0.35em; border-bottom: 1px solid var(--border-subtle); }
+.markdown-body h3 { font-size: 1.25rem; font-style: italic; }
+.markdown-body h4, .markdown-body h5, .markdown-body h6 { font-size: 1.05rem; }
+
+.markdown-body p { margin: 0 0 1.1em; }
+
+.markdown-body a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: border-color 0.3s ease;
+}
+
+.markdown-body a:hover { border-bottom-color: var(--accent-cyan); }
+
+.markdown-body strong { font-weight: 500; color: var(--text-primary); }
+
+.markdown-body ul, .markdown-body ol {
+    margin: 0 0 1.1em;
+    padding-left: 1.6em;
+}
+
+.markdown-body li { margin-bottom: 0.35em; }
+.markdown-body li::marker { color: var(--accent-gold); }
+
+.markdown-body blockquote {
+    margin: 0 0 1.1em;
+    padding: 0.2em 0 0.2em 1.25em;
+    border-left: 1px solid var(--accent-gold);
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.markdown-body code {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 3px;
+    padding: 0.15em 0.4em;
+    color: var(--accent-cyan);
+}
+
+.markdown-body pre {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    margin: 0 0 1.1em;
+    line-height: 1.6;
+}
+
+.markdown-body pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+}
+
+.markdown-body table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0 0 1.1em;
+    font-size: 0.85rem;
+}
+
+.markdown-body th {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0.5em 0.75em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.markdown-body td {
+    padding: 0.5em 0.75em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.markdown-body tr:last-child td { border-bottom: none; }
+
+.markdown-body hr {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 2em 0;
+}
+
+.markdown-body img {
+    max-width: 100%;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+}
+
+.markdown-body input[type="checkbox"] { accent-color: var(--accent-cyan); }

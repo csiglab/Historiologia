@@ -1,3 +1,0 @@
-# Imperio Parto
-
-: 13

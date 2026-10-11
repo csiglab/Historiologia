@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About · Historiologia</title>
+    <link rel="icon" href="/shared/img/favicon.ico">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('historiologia-theme') === 'light' ? 'light' : 'dark';</script>
+    <meta name="description" content="About Historiologia — mission, scope, method and contribution guide.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-void: #0b0e14; --bg-surface: #11151e; --bg-card: #161b26; --bg-elevated: #1d2330;
+            --bg-hover: rgba(255, 255, 255, 0.04);
+            --gilt: #C4B998; --parchment: #D6D1C4;
+            --text-primary: #f4f3f1; --text-secondary: #a8a5b0; --text-muted: #9290aa; --text-ghost: #82809a;
+            --accent-copper: #c9956c; --accent-copper-light: #dbb08a; --accent-cyan: #4dd4c4; --accent-cyan-dim: rgba(77, 212, 196, 0.1);
+            --border-subtle: rgba(255, 255, 255, 0.05); --border-medium: rgba(255, 255, 255, 0.08); --border-strong: rgba(255, 255, 255, 0.12);
+            --radius-sm: 5px; --radius-md: 8px; --radius-lg: 12px;
+            --card-bg: rgba(22, 27, 38, 0.72); --nav-bg: rgba(11, 14, 20, 0.85); --footer-bg: rgba(11, 14, 20, 0.7);
+            --font-display: 'Cormorant Garamond', serif; --font-body: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+        }
+        html[data-theme="light"] {
+            --bg-void: #f5f2ea; --bg-surface: #efe9dc; --bg-card: #fffdf8; --bg-elevated: #ffffff;
+            --bg-hover: rgba(20, 22, 30, 0.04);
+            --gilt: #9a7b3f; --parchment: #2b2620;
+            --text-primary: #1a1d24; --text-secondary: #4a4f5e; --text-muted: #7a7f8e; --text-ghost: #9aa0ae;
+            --accent-copper: #9a7b3f; --accent-copper-light: #7a6132; --accent-cyan: #0e7c72;
+            --border-subtle: rgba(20, 22, 30, 0.10); --border-medium: rgba(20, 22, 30, 0.14); --border-strong: rgba(20, 22, 30, 0.22);
+            --card-bg: rgba(255, 253, 248, 0.72); --nav-bg: rgba(245, 242, 234, 0.85); --footer-bg: rgba(245, 242, 234, 0.75);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; background: var(--bg-void); }
+        body { background: var(--bg-void); color: var(--text-primary); font-family: var(--font-body); min-height: 100vh; display: flex; flex-direction: column; font-weight: 300; }
+        #ambientCanvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+        nav.nav { position: sticky; top: 0; z-index: 20; background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); }
+        .nav-inner { max-width: 960px; margin: 0 auto; padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+        a.brand { font-family: var(--font-display); font-style: italic; font-size: 1.35rem; color: var(--text-primary); text-decoration: none; }
+        a.brand span { color: var(--accent-copper); }
+        .nav-right { display: flex; align-items: center; gap: 0.4rem; }
+        .nav-right a { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); text-decoration: none; padding: 0.45rem 0.8rem; border-radius: var(--radius-sm); }
+        .nav-right a:hover { color: var(--text-primary); background: var(--bg-hover); }
+        #themeToggle { background: transparent; border: 1px solid var(--border-medium); color: var(--text-secondary); border-radius: 999px; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.4rem 0.8rem; cursor: pointer; }
+        main { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 3rem 2rem 4rem; width: 100%; flex: 1; }
+        .crumbs { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.2rem; }
+        .crumbs a { color: var(--text-muted); text-decoration: none; } .crumbs a:hover { color: var(--accent-cyan); }
+        h1 { font-family: var(--font-display); font-style: italic; font-weight: 300; font-size: clamp(2.2rem, 5vw, 3.2rem); line-height: 1.1; margin-bottom: 1rem; }
+        h2 { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: 1.5rem; color: var(--text-primary); margin: 2.2rem 0 0.7rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border-subtle); }
+        p, li { color: var(--text-secondary); line-height: 1.75; font-size: 0.94rem; }
+        p + p { margin-top: 0.8rem; }
+        ul { margin: 0.7rem 0 0 1.2rem; } li + li { margin-top: 0.35rem; }
+        a.inline { color: var(--accent-cyan); text-decoration: none; } a.inline:hover { text-decoration: underline; }
+        code { font-family: var(--font-mono); font-size: 0.8em; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 4px; padding: 0.05em 0.35em; color: var(--text-primary); }
+        .panel { background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.2rem 1.3rem; margin-top: 1rem; }
+        footer { position: relative; z-index: 1; border-top: 1px solid var(--border-subtle); background: var(--footer-bg); backdrop-filter: blur(12px); }
+        .foot-inner { max-width: 960px; margin: 0 auto; padding: 1.6rem 2rem 2rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; justify-content: space-between; }
+        .foot-brand { font-family: var(--font-display); font-style: italic; color: var(--text-primary); }
+        .foot-colophon { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.14em; color: var(--text-muted); }
+        .foot-links a { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); text-decoration: none; margin-left: 1.1rem; }
+        .foot-links a:hover { color: var(--accent-cyan); }
+    </style>
+</head>
+<body>
+<canvas id="ambientCanvas"></canvas>
+<nav class="nav"><div class="nav-inner">
+    <a class="brand" href="/">Historiologia<span>.</span></a>
+    <div class="nav-right"><a href="/note/web/">Catalog</a><a href="/note/data/meta/atlas.html">Atlas</a><a href="/about.html">About</a><button id="themeToggle" type="button">◐ LIGHT/DARK</button></div>
+</div></nav>
+<main>
+    <div class="crumbs"><a href="/">Historiologia</a> / <span>About</span></div>
+    <h1>About Historiologia</h1>
+    <p><em>Laboratorium Maius Studiorum Historiologiae</em> — a collaborative research hub dedicated to the advanced study, preservation, and dissemination of Hispanic cultural, historical, and literary heritage, with comparative notes on the wider world.</p>
+    <h2>Scope</h2>
+    <ul>
+        <li><strong>Castilla</strong> — the Hispanic core and its global context: institutions, economy, law, religion, culture.</li>
+        <li><strong>Breviarium</strong> — short clarifying essays.</li>
+        <li><strong>Portugal, Russian Empire, Soviet Union</strong> — comparative imperial notes.</li>
+    </ul>
+    <h2 id="method">Method</h2>
+    <p>Each topic is a long-form <strong>note</strong> (<code>.md</code>, rendered on the fly) or a <strong>live note</strong> (<code>.html</code>, bespoke interactivity such as the atlas). The <a class="inline" href="/note/web/">catalog</a> is the navigator — browse by section, filter by tag, live and unfinished facets, full-text search. The <a class="inline" href="/note/data/meta/atlas.html">atlas</a> shows the corpus by volume. Every page shares the same navigation bar, footer, theme and typography.</p>
+    <h2>Contributing a note</h2>
+    <div class="panel">
+        <p>Place a kebab-case file under <code>app/note/data/&lt;section&gt;/</code>, e.g. <code>castilla/reformas-borbonicas.md</code>. Title comes from the first <code># </code> heading; optional tags go in front matter:</p>
+        <p><code>---<br>tags: [economia, fiscalidad]<br>---</code></p>
+        <p>Mark stubs with the reserved <code>unfinished</code> tag. Link internally with <code>[Name](target-note.md)</code>; keep references as ordinary markdown links. Then run <code>make index</code> and commit the regenerated indexes alongside the note, with one changelog entry per touched file in <code>app/note/data/changelog.json</code>. See <code>spec/note/authoring.md</code> and <code>AGENTS.md</code>.</p>
+    </div>
+    <h2>Technology</h2>
+    <p>Static-first: hand-edited markdown, prebuilt <code>index.json</code> / <code>search-index.json</code> / <code>landing-metrics.json</code> (stdlib Python builders in <code>bin/</code>), vanilla HTML/CSS/JS viewer with vendored <code>marked</code> and <code>KaTeX</code> — no build step, no database. The thin <code>app.py</code> server (stdlib <code>http.server</code>) serves <code>app/</code> plus a read-only <code>/api/health</code>, <code>/api/search</code>, <code>/api/index</code>; any static host serves the same files.</p>
+    <h2>Colophon</h2>
+    <p>Design system: Oxford Common Room — Cormorant Garamond (display italic), Inter (body), JetBrains Mono (labels); dark void with copper/cyan, parchment light theme. Viewer machinery ported from the Naturgnosis note system (code only; none of its content).</p>
+</main>
+<footer><div class="foot-inner">
+    <div><div class="foot-brand">Historiologia</div><div class="foot-colophon">HISTORIA · MEMORIA · UNUS INDEX</div></div>
+    <div class="foot-links"><a href="/">Registry</a><a href="/note/web/">Catalog</a><a href="/api/health">API</a></div>
+</div></footer>
+<script>
+(function () {
+    "use strict";
+    var root = document.documentElement;
+    document.getElementById('themeToggle').addEventListener('click', function () {
+        root.classList.add('theme-fading');
+        setTimeout(function () {
+            var next = root.dataset.theme === 'light' ? 'dark' : 'light';
+            root.dataset.theme = next;
+            try { localStorage.setItem('historiologia-theme', next); } catch (e) {}
+            setTimeout(function () { root.classList.remove('theme-fading'); }, 60);
+        }, 120);
+    });
+    try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var c = document.getElementById('ambientCanvas'), x = c.getContext('2d'), pts = [], N = 60;
+        function size() { c.width = innerWidth; c.height = innerHeight; }
+        size(); addEventListener('resize', size);
+        for (var i = 0; i < N; i++) pts.push({ x: Math.random(), y: Math.random(), vx: (Math.random() - .5) * .0006, vy: (Math.random() - .5) * .0006 });
+        (function tick() {
+            x.clearRect(0, 0, c.width, c.height);
+            for (var i = 0; i < pts.length; i++) {
+                var p = pts[i]; p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > 1) p.vx *= -1; if (p.y < 0 || p.y > 1) p.vy *= -1;
+                x.fillStyle = i % 5 ? 'rgba(201,149,108,.5)' : 'rgba(77,212,196,.5)';
+                x.beginPath(); x.arc(p.x * c.width, p.y * c.height, 1.1, 0, 7); x.fill();
+            }
+            requestAnimationFrame(tick);
+        })();
+    } catch (e) {}
+})();
+</script>
+</body>
+</html>

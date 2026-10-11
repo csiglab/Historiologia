@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note · Historiologia</title>
+    <link rel="icon" href="/shared/img/favicon.ico">
+    <script>document.documentElement.dataset.theme = localStorage.getItem('historiologia-theme') === 'light' ? 'light' : 'dark';</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="notes.css">
+    <script src="vendor/marked.min.js"></script>
+    <link rel="stylesheet" href="/shared/vendor/katex/katex.min.css">
+    <script defer src="/shared/vendor/katex/katex.min.js"></script>
+    <script defer src="/shared/vendor/katex/auto-render.min.js"></script>
+    <style>
+        :root {
+            /* Oxford Common Room tokens — keep identical to app/shared/theme.css
+               (plus note-specific extras below). */
+            --bg-void: #0b0e14;
+            --bg-surface: #11151e;
+            --bg-card: #161b26;
+            --bg-elevated: #1d2330;
+            --bg-hover: rgba(255, 255, 255, 0.04);
+            --gilt: #C4B998;
+            --parchment: #D6D1C4;
+            --thread: #4a4a4a;
+            --text-primary: #f4f3f1;
+            --text-secondary: #a8a5b0;
+            --text-muted: #9290aa;
+            --text-ghost: #82809a;
+            --accent-copper: #c9956c;
+            --accent-copper-light: #dbb08a;
+            --accent-sage: #7ba388;
+            --accent-plum: #9b7eb0;
+            --accent-rose: #c47d8a;
+            --accent-amber: #d4a857;
+            --accent-steel: #6b8caa;
+            --accent-gold: #c9956c;
+            --accent-gold-dim: rgba(201, 149, 108, 0.14);
+            --accent-cyan: #4dd4c4;
+            --accent-cyan-dim: rgba(77, 212, 196, 0.1);
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --border-medium: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.12);
+            --radius-sm: 5px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
+            --card-bg: rgba(22, 27, 38, 0.72);
+            --nav-bg: rgba(11, 14, 20, 0.85);
+            --footer-bg: rgba(11, 14, 20, 0.7);
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        html[data-theme="light"] {
+            --bg-void: #f5f2ea;
+            --bg-surface: #efe9dc;
+            --bg-card: #fffdf8;
+            --bg-elevated: #ffffff;
+            --bg-hover: rgba(20, 22, 30, 0.04);
+            --gilt: #9a7b3f;
+            --parchment: #2b2620;
+            --thread: rgba(43, 38, 32, 0.25);
+            --text-primary: #1a1d24;
+            --text-secondary: #4a4f5e;
+            --text-muted: #7a7f8e;
+            --text-ghost: #9aa0ae;
+            --accent-copper: #9a7b3f;
+            --accent-copper-light: #7a6132;
+            --accent-sage: #4e7a5e;
+            --accent-plum: #7a5f8c;
+            --accent-rose: #a55a68;
+            --accent-amber: #9a742f;
+            --accent-steel: #4e6e8c;
+            --accent-gold: #9a7b3f;
+            --accent-gold-dim: rgba(154, 123, 63, 0.12);
+            --accent-cyan: #0e7c72;
+            --accent-cyan-dim: rgba(14, 124, 114, 0.08);
+            --border-subtle: rgba(20, 22, 30, 0.10);
+            --border-medium: rgba(20, 22, 30, 0.14);
+            --border-strong: rgba(20, 22, 30, 0.22);
+            --radius-sm: 5px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.25);
+            --card-bg: rgba(255, 253, 248, 0.72);
+            --nav-bg: rgba(245, 242, 234, 0.85);
+            --footer-bg: rgba(245, 242, 234, 0.75);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; background: var(--bg-void); }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            transition: opacity 180ms ease;
+        }
+
+        html.theme-fading body { opacity: 0; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            body { transition: none; }
+        }
+
+        #ambientCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0.95rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-mark {
+            height: 26px;
+            width: auto;
+        }
+
+        .nav-brand em { font-style: italic; color: var(--accent-gold); }
+
+        .nav-links { display: flex; gap: 1.2rem; }
+
+        .nav-right { display: flex; align-items: center; gap: 1.2rem; }
+
+        .theme-toggle {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.45rem 0.75rem;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-toggle:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        .layout {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 3.5rem;
+        }
+
+        .cols {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .note-main { flex: 9 1 0; min-width: 0; }
+
+        .crumbs {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+        }
+
+        .crumbs a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+        .crumbs a:hover { color: var(--accent-cyan); }
+        .crumbs .sep { margin: 0 0.5em; color: var(--text-muted); opacity: 0.5; }
+        .crumbs .here { color: var(--accent-gold); }
+
+        h1.note-title {
+            font-family: var(--font-display);
+            font-weight: 300;
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.1;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 2rem;
+        }
+
+        .note-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin: -1.2rem 0 2rem;
+            position: relative;
+            top: 0.8rem;
+        }
+
+        .chip {
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.35rem 0.7rem;
+            text-decoration: none;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        a.chip:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        button.chip { cursor: pointer; }
+        button.chip:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        /* ---------- history modal (catalog stats-modal pattern) ---------- */
+        .hist-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 6, 10, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .hist-overlay.open { opacity: 1; pointer-events: auto; }
+        .hist-modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -48%) scale(0.96);
+            width: min(560px, 92vw);
+            max-height: 82vh;
+            background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-void) 100%);
+            border: 1px solid var(--border-medium);
+            border-left: 2px solid var(--accent-gold);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            z-index: 610;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .hist-modal.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .hist-header {
+            padding: 1.2rem 1.4rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            position: relative;
+            flex-shrink: 0;
+        }
+        .hist-eyebrow {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-style: italic;
+            color: var(--accent-gold);
+            letter-spacing: 0.06em;
+            display: block;
+        }
+        .hist-title {
+            font-family: var(--font-display);
+            font-weight: 400;
+            font-size: 1.4rem;
+            margin-top: 0.2rem;
+            word-break: break-word;
+        }
+        .hist-close {
+            position: absolute;
+            top: 0.9rem; right: 1.1rem;
+            background: none;
+            border: 0;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .hist-close:hover { color: var(--text-primary); }
+        .hist-body { padding: 0.4rem 1.4rem 1.2rem; overflow-y: auto; }
+        .hist-row { padding: 0.7rem 0; border-bottom: 1px solid var(--border-subtle); }
+        .hist-row:last-child { border-bottom: 0; }
+        .hist-meta {
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+        .hist-meta .k {
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            border-radius: 999px;
+            padding: 0.05rem 0.45rem;
+            margin-left: 0.5rem;
+        }
+        .hist-text { font-size: 0.85rem; line-height: 1.55; color: var(--text-secondary); }
+        @media (prefers-reduced-motion: reduce) {
+            .hist-overlay, .hist-modal { transition: none; }
+        }
+
+        .note-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 2.5rem;
+            backdrop-filter: blur(6px);
+        }
+
+        .sidebar {
+            flex: 1 1 0;
+            min-width: 180px;
+            position: sticky;
+            top: 3.5rem;
+            height: fit-content;
+            max-height: calc(100vh - 5rem);
+            overflow-y: auto;
+            padding: 0 1.25rem 0 0;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.9rem;
+            text-align: right;
+        }
+
+        .toc-item {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            text-decoration: none;
+            text-align: right;
+            padding: 0.3rem 0.75rem 0.3rem 0;
+            border-right: 1px solid transparent;
+            margin-right: -1.25rem;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .toc-item.sub { padding-right: 1.6rem; font-size: 0.74rem; color: var(--text-muted); }
+
+        .toc-item:hover { color: var(--text-primary); }
+        .toc-item.active { color: var(--accent-cyan); border-right-color: var(--accent-cyan); }
+
+        .state {
+            text-align: center;
+            padding: 5rem 2rem;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-void);
+        }
+
+        .state .title {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.6rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .state .msg { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.6rem; }
+
+        .state a.back {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.55rem 0.9rem;
+            text-decoration: none;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .state a.back:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border-subtle);
+            background: var(--footer-bg);
+        }
+
+        .foot-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .foot-inner a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+        .foot-inner a:hover { color: var(--accent-cyan); }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .note-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="ambientCanvas" aria-hidden="true"></canvas>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a class="nav-brand" href="/">Historiologia</a>
+            <div class="nav-right">
+                <div class="nav-links"><a href="index.html">Catalog</a></div>
+                <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch color theme">◐ <span id="themeLabel">LIGHT</span></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <div class="note-header" id="note-header" hidden>
+            <div class="crumbs" id="crumbs"></div>
+            <h1 class="note-title" id="note-title"></h1>
+            <div class="note-meta">
+                <span class="chip" id="meta-words"></span>
+                <span class="chip" id="meta-time"></span>
+                <a class="chip" id="meta-raw" href="#">view raw</a>
+                <button class="chip" id="meta-history" hidden>history</button>
+            </div>
+        </div>
+
+        <div class="cols">
+            <main class="note-main">
+                <div class="state" id="loading">
+                    <div class="title">Loading&hellip;</div>
+                </div>
+
+                <div class="state" id="error" hidden>
+                    <div class="title">Note not found.</div>
+                    <div class="msg" id="errorMsg"></div>
+                    <a class="back" href="index.html">&larr; Catalog</a>
+                </div>
+
+                <article class="note-card" id="note-card" hidden>
+                    <div class="markdown-body" id="note-body"></div>
+                </article>
+            </main>
+
+            <aside class="sidebar" id="sidebar" hidden>
+                <div class="sidebar-title">Contents</div>
+                <nav id="toc"></nav>
+            </aside>
+        </div>
+    </div>
+
+    <div class="hist-overlay" id="hist-overlay"></div>
+    <div class="hist-modal" id="hist-modal" role="dialog" aria-modal="true" aria-label="Note history">
+        <div class="hist-header">
+            <span class="hist-eyebrow">History</span>
+            <h3 class="hist-title" id="hist-title">Changelog</h3>
+            <button class="hist-close" id="hist-close" aria-label="Close history">&times;</button>
+        </div>
+        <div class="hist-body" id="hist-body"></div>
+    </div>
+
+    <footer>
+        <div class="foot-inner">
+            <div>Historiologia &middot; notes</div>
+            <a href="index.html">&larr; CATALOG</a>
+        </div>
+    </footer>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var SEG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+        /* ---------- ambient constellation ---------- */
+
+        var canvas = document.getElementById('ambientCanvas');
+        var ctx = canvas.getContext('2d');
+        var pts = [];
+        var LINK_DIST = 130;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var count = Math.max(20, Math.floor((canvas.width * canvas.height) / 40000));
+            pts = [];
+            for (var i = 0; i < count; i++) {
+                pts.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.22,
+                    vy: (Math.random() - 0.5) * 0.22,
+                    r: Math.random() * 1.4 + 0.4
+                });
+            }
+        }
+
+        function tick() {
+            var light = document.documentElement.dataset.theme === 'light';
+            var dotRGB = light ? '26, 29, 36' : '226, 228, 235';
+            var linkRGB = light ? '154, 123, 63' : '201, 149, 108';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (var i = 0; i < pts.length; i++) {
+                var p = pts[i];
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(' + dotRGB + ', 0.5)';
+                ctx.fill();
+                for (var j = i + 1; j < pts.length; j++) {
+                    var m = pts[j];
+                    var dx = p.x - m.x, dy = p.y - m.y;
+                    var dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < LINK_DIST) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(m.x, m.y);
+                        ctx.strokeStyle = 'rgba(' + linkRGB + ', ' + (0.10 * (1 - dist / LINK_DIST)) + ')';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(tick);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        requestAnimationFrame(tick);
+
+        /* ---------- theme toggle (shared with the hub) ---------- */
+
+        var themeToggle = document.getElementById('themeToggle');
+        var themeLabel = document.getElementById('themeLabel');
+        var themeFading = false;
+
+        function applyThemeLabel() {
+            themeLabel.textContent = document.documentElement.dataset.theme === 'light' ? 'DARK' : 'LIGHT';
+        }
+
+        themeToggle.addEventListener('click', function () {
+            if (themeFading) return;
+            themeFading = true;
+            var root = document.documentElement;
+            var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var swap = function () {
+                root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+                try { localStorage.setItem('historiologia-theme', root.dataset.theme); } catch (e) { /* private mode */ }
+                applyThemeLabel();
+                root.classList.remove('theme-fading');
+                themeFading = false;
+            };
+            if (reduced) {
+                swap();
+                return;
+            }
+            root.classList.add('theme-fading');
+            setTimeout(swap, 190);
+        });
+
+        applyThemeLabel();
+
+        /* ---------- note loading ---------- */
+
+        function fail(msg) {
+            document.getElementById('loading').hidden = true;
+            document.getElementById('errorMsg').textContent = msg;
+            document.getElementById('error').hidden = false;
+        }
+
+        function validPath(p) {
+            if (!p || p.length > 200) return false;
+            var parts = p.split('/');
+            for (var i = 0; i < parts.length; i++) {
+                var part = parts[i];
+                if (i === parts.length - 1) {
+                    if (!/\.md$/.test(part) || !SEG_RE.test(part.slice(0, -3))) return false;
+                } else if (!SEG_RE.test(part)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function esc(s) {
+            var d = document.createElement('div');
+            d.textContent = s == null ? '' : String(s);
+            return d.innerHTML;
+        }
+
+        function encPath(p) {
+            return p.split('/').map(encodeURIComponent).join('/');
+        }
+
+        /* ---------- per-file changelog history (changelog.json) ---------- */
+
+        var histPromise = fetch('../data/changelog.json', { headers: { 'Accept': 'application/json' } })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (d) { return Array.isArray(d) ? d : []; })
+            .catch(function () { return []; });
+
+        function openHistory(name, logs) {
+            var body = document.getElementById('hist-body');
+            document.getElementById('hist-title').textContent = name;
+            var rows = logs.slice().reverse().map(function (l) {
+                return '<div class="hist-row"><div class="hist-meta">' + esc(l.date || '') +
+                    (l.kind ? '<span class="k">' + esc(l.kind) + '</span>' : '') + '</div>' +
+                    '<div class="hist-text">' + esc(l.summary || '') + '</div></div>';
+            }).join('');
+            body.innerHTML = rows;
+            document.getElementById('hist-overlay').classList.add('open');
+            document.getElementById('hist-modal').classList.add('open');
+        }
+
+        function closeHistory() {
+            document.getElementById('hist-overlay').classList.remove('open');
+            document.getElementById('hist-modal').classList.remove('open');
+        }
+
+        function wireHistory(name, list) {
+            var entry = null;
+            for (var i = 0; i < list.length; i++) {
+                if (list[i] && list[i].file_path === name) { entry = list[i]; break; }
+            }
+            var logs = (entry && Array.isArray(entry.logs)) ? entry.logs : [];
+            if (!logs.length) return;
+            var btn = document.getElementById('meta-history');
+            btn.hidden = false;
+            btn.textContent = 'history';
+            btn.onclick = function () { openHistory(name, logs); };
+        }
+
+        document.getElementById('hist-overlay').addEventListener('click', closeHistory);
+        document.getElementById('hist-close').addEventListener('click', closeHistory);
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeHistory();
+        });
+
+        /* Split optional `---` front matter off; only `tags: [...]` is read. */
+        function stripFrontMatter(md) {
+            var tags = [];
+            var body = md;
+            var fm = md.match(/^---\n([\s\S]*?)\n---\n/);
+            if (fm) {
+                var lines = fm[1].split('\n');
+                for (var i = 0; i < lines.length; i++) {
+                    var tm = lines[i].trim().match(/^tags:\s*\[(.*)\]\s*$/);
+                    if (tm) {
+                        tm[1].split(',').forEach(function (raw) {
+                            var t = raw.trim().replace(/^['"]|['"]$/g, '').toLowerCase();
+                            if (t && tags.indexOf(t) < 0) tags.push(t);
+                        });
+                    }
+                }
+                body = md.slice(fm[0].length);
+            }
+            return { body: body, tags: tags };
+        }
+
+        function renderTags(tags) {
+            var meta = document.querySelector('.note-meta');
+            tags.forEach(function (t) {
+                var a = document.createElement('a');
+                a.className = 'chip';
+                a.href = 'index.html?view=files&q=' + encodeURIComponent(t);
+                a.textContent = '#' + t;
+                meta.appendChild(a);
+            });
+        }
+
+        function renderCrumbs(path) {
+            var parts = path.split('/');
+            var html = '<a href="index.html">notes</a>';
+            var prefix = [];
+            for (var i = 0; i < parts.length; i++) {
+                html += '<span class="sep">/</span>';
+                if (i === parts.length - 1) {
+                    html += '<span class="here">' + esc(parts[i].replace(/\.md$/, '')) + '</span>';
+                } else {
+                    prefix.push(parts[i]);
+                    html += '<a href="index.html?dir=' + prefix.map(encodeURIComponent).join('/') + '">' + esc(parts[i]) + '</a>';
+                }
+            }
+            document.getElementById('crumbs').innerHTML = html;
+        }
+
+        function buildToc() {
+            var headings = document.querySelectorAll('#note-body h2, #note-body h3');
+            var toc = document.getElementById('toc');
+            toc.innerHTML = '';
+            if (!headings.length) { document.getElementById('sidebar').hidden = true; return; }
+            document.getElementById('sidebar').hidden = false;
+            headings.forEach(function (h, i) {
+                h.id = 'sec-' + i;
+                var a = document.createElement('a');
+                a.href = '#sec-' + i;
+                a.className = 'toc-item' + (h.tagName === 'H3' ? ' sub' : '');
+                a.textContent = h.textContent;
+                a.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+                toc.appendChild(a);
+            });
+
+            var items = toc.querySelectorAll('.toc-item');
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    var idx = Array.prototype.indexOf.call(headings, entry.target);
+                    items.forEach(function (it) { it.classList.remove('active'); });
+                    if (items[idx]) items[idx].classList.add('active');
+                });
+            }, { rootMargin: '-10% 0px -60% 0px' });
+            headings.forEach(function (h) { observer.observe(h); });
+        }
+
+        /* LaTeX-safe markdown: shield $$…$$ display blocks from the
+           parser (bare '=' lines would otherwise become setext headings),
+           then restore them verbatim for KaTeX. */
+        function renderMarkdown(md) {
+            var blocks = [];
+            var shielded = md.replace(/\$\$[\s\S]*?\$\$/g, function (m) {
+                blocks.push(m);
+                return '\n\nMATHBLOCK' + (blocks.length - 1) + '\n\n';
+            });
+            var html = marked.parse(shielded);
+            html = html.replace(/MATHBLOCK(\d+)/g, function (_, i) { return blocks[+i] || ''; });
+            return html;
+        }
+
+        var params = new URLSearchParams(window.location.search);
+        var name = params.get('n') || '';
+
+        if (!validPath(name)) {
+            fail(name ? 'Invalid note path: "' + name + '".' : 'No note specified. Use note.html?n=&lt;path&gt;.');
+        } else {
+            fetch('../data/' + name)
+                .then(function (r) {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(function (md) {
+                    var fm = stripFrontMatter(md);
+                    md = fm.body;
+                    var title = null;
+                    var lines = md.split('\n');
+                    for (var i = 0; i < lines.length; i++) {
+                        var m = lines[i].match(/^#\s+(.+?)\s*#*\s*$/);
+                        if (m) { title = m[1]; break; }
+                    }
+                    if (!title) title = name.split('/').pop().replace(/\.md$/, '').replace(/-/g, ' ');
+
+                    document.title = title + ' — Notes';
+                    document.getElementById('note-title').textContent = title;
+                    renderCrumbs(name);
+
+                    var words = md.split(/\s+/).filter(Boolean).length;
+                    document.getElementById('meta-words').textContent = words + ' words';
+                    document.getElementById('meta-time').textContent = Math.max(1, Math.ceil(words / 200)) + ' min read';
+                    document.getElementById('meta-raw').setAttribute('href', '../data/' + encPath(name));
+                    renderTags(fm.tags);
+                    histPromise.then(function (list) { wireHistory(name, list); });
+
+                    document.getElementById('note-body').innerHTML = renderMarkdown(md);
+                    try {
+                        if (typeof renderMathInElement === 'function') {
+                            renderMathInElement(document.getElementById('note-body'), {
+                                delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '\\[', right: '\\]', display: true },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '$', right: '$', display: false }
+                                ],
+                                throwOnError: false
+                            });
+                        } else if (typeof console !== 'undefined' && console.warn) {
+                            console.warn('math engine missing (/shared/vendor/katex failed to load): TeX renders as source');
+                        }
+                    } catch (e) { /* TeX source stays readable */ }
+                    document.getElementById('loading').hidden = true;
+                    document.getElementById('note-header').hidden = false;
+                    document.getElementById('note-card').hidden = false;
+                    buildToc();
+                })
+                .catch(function (err) {
+                    fail(err.message === 'HTTP 404' ? 'The note "' + name + '" does not exist.' : 'Failed to load the note (' + err.message + ').');
+                });
+        }
+    })();
+    </script>
+</body>
+</html>
