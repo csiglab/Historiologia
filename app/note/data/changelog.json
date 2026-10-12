@@ -76,6 +76,11 @@
         "date": "2026-10-11",
         "kind": "docs",
         "summary": "Import from legacy vault: kebab-case rename, tags front matter, unfinished stubs marked"
+      },
+      {
+        "date": "2026-10-12",
+        "kind": "docs",
+        "summary": "Stub expansion test: replaced placeholder with Austrias identification sentence"
       }
     ]
   },
