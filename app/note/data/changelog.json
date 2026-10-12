@@ -1473,5 +1473,15 @@
         "summary": "Import from legacy vault: kebab-case rename, tags front matter, unfinished stubs marked"
       }
     ]
+  },
+  {
+    "file_path": "technology/technology.md",
+    "logs": [
+      {
+        "date": "2026-10-12",
+        "kind": "feat",
+        "summary": "New section: history of technology entry with book and paper references"
+      }
+    ]
   }
 ]
