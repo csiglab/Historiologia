@@ -12,7 +12,9 @@ inline `:root` blocks that must stay identical to the shared tokens below.
 - Helpers: display italic headings, mono eyebrow/caption labels, card/panel
   surfaces, thin borders, copper focus. Ambient constellation canvas
   (copper/cyan, `prefers-reduced-motion` off), blurred sticky nav.
-- Every note — `.md` via the reader and live `.html` — shares the same nav
-  (`brand Historiologia + Catalog / Atlas / About + ◐ LIGHT/DARK` toggle,
+- Every page shares the same nav shell (`brand-lockup`: italic
+  `Historiologia.` + `Laboratorium Maius Studiorum Historiologiae` sub-line,
+  Corpus / Atlas / Chronology / Sources / About links, sun/moon icon toggle,
   `localStorage:historiologia-theme`) and footer
-  (`Historiologia · HISTORIA · MEMORIA · UNUS INDEX`).
+  (`Historiologia · HISTORIA · MEMORIA · UNUS INDEX` + the same links).
+  (Live note `atlas.html` keeps its breadcrumb nav.)
