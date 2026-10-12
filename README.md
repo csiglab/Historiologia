@@ -36,4 +36,5 @@ Read `AGENTS.md` and `spec/note/authoring.md` before contributing notes.
 - [ ]  Consevacion de Monarquias y Discursos Políticos - Sobre la Gran Consulta que el Consejo Hizo al Señor Rey Don Felipe Tercero. - https://play.google.com/books/reader?id=Isb9IYPMAykC&pg=GBS.PP8&hl=en
 - [ ]  China
 - [ ]  India
+- [ ]  https://afe.easia.columbia.edu/
 
